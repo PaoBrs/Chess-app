@@ -1,0 +1,26 @@
+.tile {
+  height: 100px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  border: none;
+}
+
+.tile:hover {
+border: solid 3px gray;
+}
+
+.black-tile{
+  background-color: #26416D;
+}
+
+.white-tile{
+  background-color: #FAF0EF;
+}
+
+.piece {
+  height:70% ;
+}
