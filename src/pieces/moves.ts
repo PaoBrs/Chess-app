@@ -7,6 +7,16 @@ export class Moves {
     const black = [8, 9, 10, 11, 12, 13, 14, 15]
   }
 
+  rookMoves() { }
+
+  knightMoves() { }
+
+  kingMoves() { }
+
+  bishopMoves() { }
+
+
+
 }
 
 export class MovesFactory {

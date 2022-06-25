@@ -19,6 +19,9 @@ const dictionaryPGN: any = {
 
 const boardPGN = BoardFactory.newBoard()
 
+const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+const numbers = [8, 7, 6, 5, 4, 3, 2, 1]
+
 interface Coordinates {
   x: number,
   y: number
@@ -62,20 +65,27 @@ const Chessboard = () => {
   // console.log(to)
 
   return (
-    <div id='chessboard'>
-      {positions.map((tile, index) =>
-        <Spot
-          key={index}
-          x={tile.x}
-          y={tile.y}
-          number={horizontalLines.includes(index) ? index + 1 : index}
-          image={tile.piece ? tile.piece.img : null}
-          type={tile.piece ? tile.piece.type : null}
-          setFrom={setFrom}
-          setTo={setTo}
-          isValidFrom={isValidFrom}
-        />)}
-    </div>
+    <>
+      <div className='container'>
+        <div className='numberAxis main-axis'>{numbers.map((number, index) => <div className='number axis-item'>{number}</div>)}</div>
+        <hr className='break' />
+        <div id='chessboard'>
+          {positions.map((tile, index) =>
+            <Spot
+              key={index}
+              x={tile.x}
+              y={tile.y}
+              number={horizontalLines.includes(index) ? index + 1 : index}
+              image={tile.piece ? tile.piece.img : null}
+              type={tile.piece ? tile.piece.type : null}
+              setFrom={setFrom}
+              setTo={setTo}
+              isValidFrom={isValidFrom}
+            />)}
+        </div>
+      </div>
+      <div className='letterAxis main-axis'>{letters.map((letter, index) => <div className='letter axis-item'> {letter}</div>)}</div>
+    </>
 
   )
 }

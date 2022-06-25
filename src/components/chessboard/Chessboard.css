@@ -8,3 +8,74 @@
   border: solid 5px #26416D;
   
 }
+
+.container{
+display: flex;
+flex-direction: row;
+
+}
+
+.numberAxis{
+
+  flex-direction: column;
+  width: 70px;
+  border: solid 5px #26416D;
+}
+
+.number{
+
+height: 100px;
+width: 100%;
+
+}
+
+.number:nth-child(even){
+  background-color: #26416D;
+  color: #FAF0EF ;
+  justify-content: center;
+
+}
+
+.letter:nth-child(odd){
+  background-color: #26416D;
+  color: #FAF0EF ;
+  justify-content: center;
+
+}
+
+.letterAxis{
+
+  flex-direction: row;
+  width: 800px;
+  margin-left: 90px;
+  margin-top: 10px;
+  
+}
+
+.break{
+  padding: 5px;
+  border: none;
+}
+
+.letter{
+  width: 100px;
+  
+}
+
+.axis-item {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content:center ;
+  
+}
+
+.main-axis{
+  display: flex;
+  background-color:#FAF0EF;
+  color: #26416D;
+  text-align: center;
+  align-items:center;
+  border: solid 5px #26416D;
+  font-size: 50px;
+}
