@@ -1,14 +1,15 @@
 import { Tile, TileFactory } from './tile';
 import { numberToLetter } from '../../utils/numberToLetter';
+import { Moves, MovesFactory } from '../../pieces/moves';
 
 export class Board {
   public chessBoard: Tile[][];
+  public moves: Moves
 
 
   constructor() {
     this.chessBoard = this.setInitialPositions()
-    // console.log(this.getTilePGN(7, 'd'))
-    // console.log(this.getTileCartesian(0, 0));
+    this.moves = MovesFactory.newMoves()
   }
 
 

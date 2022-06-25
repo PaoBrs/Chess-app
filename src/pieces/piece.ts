@@ -1,4 +1,5 @@
 import { ITypePiece, LettersAxis, PGNCode } from "../interfaces/interface";
+import { Moves } from './moves';
 
 const pgnToName: any = {
   r: 'rook',
@@ -18,6 +19,7 @@ export class Piece {
     this.color = color;
     this.img = img;
     this.type = type;
+
   }
 
   getColor() {
@@ -40,6 +42,7 @@ export class PieceFactory {
     } else {
       image = (x < 2 ? `${pgnToName[type]}_w.png` : `${pgnToName[type]}_b.png`)
     }
+
     const color = (x < 2 ? 'white' : 'black')
     if (type !== '') {
       return new Piece(color, image, pgnToName[type])
