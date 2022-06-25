@@ -1,43 +1,44 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
-import initialiseChessBoard from '../../utils/initalPosition';
-import Tile from '../tile/Tile';
+import Spot from '../tile/Spot';
 import './Chessboard.css'
-import { PieceFactory, Piece } from '../../pieces/piece';
-import { Board } from '../board/board';
+import { BoardFactory } from '../board/board';
+import { Tile } from '../board/tile';
+import { numberToLetter } from '../../utils/numberToLetter';
 
-
-const horizontalAxis = ["a", "b", "c", "d", "f", "g", "f", "h"];
-const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8"]
 const horizontalLines = [8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30, 31, 40, 41, 42, 43, 44, 45, 46, 47, 56, 57, 58, 59, 60, 61, 62, 63]
 
-const boardTest = new Board()
+const dictionaryPGN: any = {
+  pawn: '',
+  rook: 'r',
+  bishop: 'b',
+  queen: 'q',
+  king: 'k',
+  knight: 'n'
 
-console.log(boardTest)
+}
+
+const boardPGN = BoardFactory.newBoard()
+
+interface Coordinates {
+  x: number,
+  y: number
+}
+console.log(boardPGN.chessBoard)
 const Chessboard = () => {
 
-  const [positions, setPositions] = useState<(Piece | null)[]>([])
-  const [from, setFrom] = useState<number | null>(null)
-  const [to, setTo] = useState<number | null>(null)
+  const [positions, setPositions] = useState<Tile[]>([])
+  const [from, setFrom] = useState<Coordinates | null>(null)
+  const [to, setTo] = useState<Coordinates | null>(null)
   const [isValidFrom, setIsValidFrom] = useState(false)
 
-  console.log(from, to)
-
   useEffect(() => {
-    // if (from) {
-    //   if (positions[from].isMoveValid(from, to, false)) {
-    //     const newPositions = movePieces(from, to, positions)
-    //     console.log('holiiii')
-    //     setPositions(newPositions)
-    //     console.log(newPositions)
-    //   }
-    // }
-    if (from && to) {
-      PieceFactory.moveTo([...positions], from, to, setPositions)
-      setFrom(null)
-      setTo(null)
+    let linealBoard: Tile[] = []
+    for (let i = 7; i >= 0; i--) {
+      linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
     }
-  }, [to, from])
+    setPositions(linealBoard)
+  }, [])
 
 
   useEffect(() => {
@@ -48,24 +49,35 @@ const Chessboard = () => {
     }
   }, [from])
 
-
   useEffect(() => {
-    setPositions(initialiseChessBoard())
-  }, [])
+
+    if (from && to) {
+      console.log('PGN :', dictionaryPGN[boardPGN.chessBoard[from.x][from.y].piece!.type], numberToLetter[to.y], to.x + 1)
+      boardPGN.movePiece(from.x, from.y, to.x, to.y)
+      setFrom(null)
+      setTo(null)
+    }
+  }, [to, from])
+
+  // console.log(from)
+  // console.log(to)
 
   return (
     <div id='chessboard'>
-      {positions.map((position, index) =>
-        <Tile
+      {positions.map((tile, index) =>
+        <Spot
           key={index}
-          index={index}
+          x={tile.x}
+          y={tile.y}
           number={horizontalLines.includes(index) ? index + 1 : index}
-          image={position ? position.img : null}
+          image={tile.piece ? tile.piece.img : null}
+          type={tile.piece ? tile.piece.type : null}
           setFrom={setFrom}
           setTo={setTo}
           isValidFrom={isValidFrom}
         />)}
     </div>
+
   )
 }
 

@@ -1,7 +1,5 @@
 import { Tile, TileFactory } from './tile';
-import { PieceFactory, Piece } from '../../pieces/piece';
-
-type LettersAxis = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h'
+import { numberToLetter } from '../../utils/numberToLetter';
 
 export class Board {
   public chessBoard: Tile[][];
@@ -9,8 +7,8 @@ export class Board {
 
   constructor() {
     this.chessBoard = this.setInitialPositions()
-    console.log(this.getTilePGN(7, 'd'))
-    console.log(this.getTileCartesian(0, 0));
+    // console.log(this.getTilePGN(7, 'd'))
+    // console.log(this.getTileCartesian(0, 0));
   }
 
 
@@ -20,31 +18,31 @@ export class Board {
     for (let i = 0; i < squares.length; i++) {
       squares[i] = Array(8).fill(null)
     }
-    console.log(squares)
-    squares[0][0] = TileFactory.newTile(0, 0, PieceFactory.newPiece('white', 'rook'));
-    squares[0][1] = TileFactory.newTile(0, 1, PieceFactory.newPiece('white', 'knight'));
-    squares[0][2] = TileFactory.newTile(0, 2, PieceFactory.newPiece('white', 'bishop'));
-    squares[0][3] = TileFactory.newTile(0, 3, PieceFactory.newPiece('white', 'queen'));
-    squares[0][4] = TileFactory.newTile(0, 4, PieceFactory.newPiece('white', 'king'));
-    squares[0][5] = TileFactory.newTile(0, 2, PieceFactory.newPiece('white', 'bishop'));
-    squares[0][6] = TileFactory.newTile(0, 1, PieceFactory.newPiece('white', 'knight'));
-    squares[0][7] = TileFactory.newTile(0, 0, PieceFactory.newPiece('white', 'rook'));
+    // console.log(squares)
+    squares[0][0] = TileFactory.newTilePGN('r', 0, 'a');
+    squares[0][1] = TileFactory.newTilePGN('n', 0, 'b');
+    squares[0][2] = TileFactory.newTilePGN('b', 0, 'c');
+    squares[0][3] = TileFactory.newTilePGN('q', 0, 'd');
+    squares[0][4] = TileFactory.newTilePGN('k', 0, 'e');
+    squares[0][5] = TileFactory.newTilePGN('b', 0, 'f');
+    squares[0][6] = TileFactory.newTilePGN('n', 0, 'g');
+    squares[0][7] = TileFactory.newTilePGN('r', 0, 'h');
 
     for (let i = 0; i < 8; i++) {
-      squares[1][i] = TileFactory.newTile(1, 0, PieceFactory.newPiece('white', 'pawn'));
+      squares[1][i] = TileFactory.newTilePGN('', 1, numberToLetter[i]);
     }
 
-    squares[7][0] = TileFactory.newTile(7, 0, PieceFactory.newPiece('black', 'rook'));
-    squares[7][1] = TileFactory.newTile(7, 1, PieceFactory.newPiece('black', 'king'));
-    squares[7][2] = TileFactory.newTile(7, 2, PieceFactory.newPiece('black', 'bishop'));
-    squares[7][3] = TileFactory.newTile(7, 3, PieceFactory.newPiece('black', 'queen'));
-    squares[7][4] = TileFactory.newTile(7, 4, PieceFactory.newPiece('black', 'king'));
-    squares[7][5] = TileFactory.newTile(7, 5, PieceFactory.newPiece('black', 'bishop'));
-    squares[7][6] = TileFactory.newTile(7, 6, PieceFactory.newPiece('black', 'king'));
-    squares[7][7] = TileFactory.newTile(7, 7, PieceFactory.newPiece('black', 'rook'));
+    squares[7][0] = TileFactory.newTilePGN('r', 7, 'a');
+    squares[7][1] = TileFactory.newTilePGN('n', 7, 'b');
+    squares[7][2] = TileFactory.newTilePGN('b', 7, 'c');
+    squares[7][3] = TileFactory.newTilePGN('q', 7, 'd');
+    squares[7][4] = TileFactory.newTilePGN('k', 7, 'e');
+    squares[7][5] = TileFactory.newTilePGN('b', 7, 'f');
+    squares[7][6] = TileFactory.newTilePGN('n', 7, 'g');
+    squares[7][7] = TileFactory.newTilePGN('r', 7, 'h');
 
     for (let i = 0; i < 8; i++) {
-      squares[6][i] = TileFactory.newTile(1, 0, PieceFactory.newPiece('black', 'pawn'));
+      squares[6][i] = TileFactory.newTilePGN('', 6, numberToLetter[i]);
     }
 
     for (let i = 2; i < 6; i++) {
@@ -55,32 +53,37 @@ export class Board {
     return squares as Tile[][];
   }
 
-  public getTileCartesian(x: number, y: number) {
-    if (x < 0 || x > 7 || y < 0 || y > 7) {
-      throw new Error("Invalid coordinates");
-    }
+  // public getTileCartesian(x: number, y: number) {
+  //   if (x < 0 || x > 7 || y < 0 || y > 7) {
+  //     throw new Error("Invalid coordinates");
+  //   }
 
-    return this.chessBoard[x][y];
+  //   return this.chessBoard[x][y];
 
-  }
+  // }
 
-  public getTilePGN(x: number, y: LettersAxis): Tile {
-    const dictionary = {
-      a: 0,
-      b: 1,
-      c: 2,
-      d: 3,
-      e: 4,
-      f: 5,
-      g: 6,
-      h: 7
-    }
+  // public getTilePGN(x: number, y: LettersAxis): Tile {
+  //   const dictionary = {
+  //     a: 0,
+  //     b: 1,
+  //     c: 2,
+  //     d: 3,
+  //     e: 4,
+  //     f: 5,
+  //     g: 6,
+  //     h: 7
+  //   }
 
-    if (x < 0 || x > 7 || dictionary[y] < 0 || dictionary[y] > 7) {
-      throw new Error("Invalid coordinates");
-    }
+  //   if (x < 1 || x > 8 || !Object.keys(dictionary).includes(y)) {
+  //     throw new Error("Invalid coordinates");
+  //   }
 
-    return this.chessBoard[x][dictionary[y]];
+  //   return this.chessBoard[x - 1][dictionary[y]];
+  // }
+
+  public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number) {
+    this.chessBoard[xTo][yTo].piece = this.chessBoard[xFrom][yFrom].piece
+    this.chessBoard[xFrom][yFrom].piece = null;
   }
 }
 

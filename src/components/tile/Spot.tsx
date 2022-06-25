@@ -1,27 +1,39 @@
-import React, { useState } from 'react'
 import './Tile.css'
+import { numberToLetter } from '../../utils/numberToLetter';
 
 type Props = {
   number: number;
   image: string | null;
-  index: number;
-  setFrom: (index: number | null) => void;
+  type: string | null;
+  x: number;
+  y: number;
+  setFrom: (index: Coordinates | null) => void;
   isValidFrom: boolean;
-  setTo: (index: number | null) => void;
+  setTo: (index: Coordinates | null) => void;
+
 }
 
-const Tile = ({ number, image, index, setFrom, isValidFrom, setTo }: Props) => {
+interface Coordinates {
+  x: number,
+  y: number,
+}
+
+
+const Spot = ({ number, image, type, x, y, setFrom, isValidFrom, setTo }: Props) => {
   const handlerClick = () => {
     if (!isValidFrom) {
 
       if (image) {
-        setFrom(index)
+        setFrom({ x, y })
+        console.log('from: ', numberToLetter[y], x + 1)
       } else {
         setFrom(null)
       }
 
     } else {
-      setTo(index)
+      setTo({ x, y })
+      console.log('to: ', numberToLetter[y], x + 1)
+
     }
 
     console.log(image)
@@ -36,4 +48,4 @@ const Tile = ({ number, image, index, setFrom, isValidFrom, setTo }: Props) => {
 
 }
 
-export default Tile
+export default Spot
