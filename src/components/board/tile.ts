@@ -8,6 +8,10 @@ export class Tile {
     public y: number,
     public piece: Piece | null,
   ) { }
+
+  isOccupied() {
+    return this.piece ? true : false;
+  }
 }
 
 export class TileFactory {

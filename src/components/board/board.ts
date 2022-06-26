@@ -82,9 +82,26 @@ export class Board {
   //   return this.chessBoard[x - 1][dictionary[y]];
   // }
 
-  public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number) {
-    this.chessBoard[xTo][yTo].piece = this.chessBoard[xFrom][yFrom].piece
-    this.chessBoard[xFrom][yFrom].piece = null;
+  public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
+    const type = this.chessBoard[xFrom][yFrom].piece!.type;
+    const color = this.chessBoard[xFrom][yFrom].piece!.color;
+    let canMove = false;
+
+    switch (type) {
+      case 'pawn':
+        canMove = this.moves.pawnMoves(color, xFrom, yFrom, xTo, yTo, isOccupied);
+
+        break;
+
+      default:
+        break;
+    }
+    if (canMove) {
+      console.log('moved')
+      this.chessBoard[xTo][yTo].piece = this.chessBoard[xFrom][yFrom].piece
+      this.chessBoard[xFrom][yFrom].piece = null;
+    }
+
   }
 }
 

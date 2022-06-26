@@ -26,7 +26,7 @@ interface Coordinates {
   x: number,
   y: number
 }
-console.log(boardPGN.chessBoard)
+
 const Chessboard = () => {
 
   const [positions, setPositions] = useState<Tile[]>([])
@@ -54,8 +54,10 @@ const Chessboard = () => {
   useEffect(() => {
 
     if (from && to) {
+      const tile = boardPGN.chessBoard[to.x][to.y];
       console.log('PGN :', dictionaryPGN[boardPGN.chessBoard[from.x][from.y].piece!.type], numberToLetter[to.y], to.x + 1)
-      boardPGN.movePiece(from.x, from.y, to.x, to.y)
+      console.log(tile.isOccupied())
+      boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied())
       setFrom(null)
       setTo(null)
     }
