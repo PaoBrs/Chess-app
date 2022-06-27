@@ -1,25 +1,5 @@
-import { ITypePiece } from '../interfaces/interface';
-import { Tile } from '../components/board/tile';
+import { RookMovesProps, PawnMovesProps } from './interfaces';
 
-interface PawnMovesProps {
-  colorFrom: string,
-  colorTo: string | undefined,
-  xFrom: number,
-  yFrom: number,
-  xTo: number,
-  yTo: number,
-  isOccupied: boolean,
-  chessBoard: Tile[][],
-}
-
-interface RookMovesProps {
-  xFrom: number,
-  yFrom: number,
-  xTo: number,
-  yTo: number,
-  chessBoard: Tile[][],
-  colorTo: string | undefined
-}
 
 export class Moves {
 
@@ -55,16 +35,11 @@ export class Moves {
     } else {
       switch (colorFrom) {
         case 'black':
-          if (colorTo === 'white') {
-            return xFrom - xTo === 1 && Math.abs(yFrom - yTo) === 1
-          }
-          return false
+          return xFrom - xTo === 1 && Math.abs(yFrom - yTo) === 1
 
         case 'white':
-          if (colorTo === 'black') {
-            return xTo - xFrom === 1 && Math.abs(yFrom - yTo) === 1
-          }
-          return false
+
+          return xTo - xFrom === 1 && Math.abs(yFrom - yTo) === 1
 
         default:
           return false
@@ -75,16 +50,9 @@ export class Moves {
   rookMoves({ xFrom, yFrom, xTo, yTo, chessBoard }: RookMovesProps) {
     const isSameRow: boolean = (xFrom === xTo);
     const isSameColumn: boolean = (yFrom === yTo);
-    let isPathFree = true
-    const colorFrom = chessBoard[xFrom][yFrom].piece!.color
-    const colorTo = chessBoard[xTo][yTo].piece?.color
-
-    if (colorFrom === colorTo) {
-      return false
-    }
+    let isPathFree = true;
 
     if (isSameRow) {
-      console.log(0)
       if (yTo > yFrom) {
         console.log(1)
         for (let i = yFrom + 1; i < yTo; i++) {
@@ -94,7 +62,6 @@ export class Moves {
         }
         return isPathFree ? true : false
       } else {
-        console.log(2)
         for (let i = yTo + 1; i < yFrom; i++) {
           if (chessBoard[xFrom][i].isOccupied()) {
             isPathFree = false
@@ -104,9 +71,7 @@ export class Moves {
       }
     }
     if (isSameColumn) {
-      console.log(3)
       if (xTo > xFrom) {
-        console.log(3.1)
         for (let i = xFrom + 1; i < xTo; i++) {
           if (chessBoard[i][yFrom].isOccupied()) {
             isPathFree = false
@@ -114,7 +79,6 @@ export class Moves {
         }
         return isPathFree ? true : false
       } else {
-        console.log(4)
         for (let i = xTo + 1; i < xFrom; i++) {
           if (chessBoard[i][yFrom].isOccupied()) {
             isPathFree = false
@@ -127,13 +91,62 @@ export class Moves {
   }
 
 
-  knightMoves() { }
+  knightMoves({ xFrom, yFrom, xTo, yTo }: RookMovesProps) {
+    const xDifference = Math.abs(xFrom - xTo);
+    const yDifference = Math.abs(yFrom - yTo);
+
+    return (xDifference * yDifference === 2) ? true : false
+  }
+
+  bishopMoves({ xFrom, yFrom, xTo, yTo, chessBoard }: RookMovesProps) {
+    const isSameDiagonal = (Math.abs(xFrom - xTo) === Math.abs(yFrom - yTo))
+    let isPathFree = true;
+
+    if (!isSameDiagonal) {
+      return false
+    }
+
+    if (xFrom < xTo && yFrom < yTo) {
+      let j = yFrom + 1
+      for (let i = xFrom + 1; i < xTo; i++) {
+        if (chessBoard[i][j].isOccupied()) {
+          isPathFree = false;
+        }
+        j++;
+      }
+    } else if (xFrom > xTo && yFrom < yTo) {
+      let j = yTo - 1
+      for (let i = xTo + 1; i < xFrom; i++) {
+        if (chessBoard[i][j].isOccupied()) {
+          isPathFree = false;
+        }
+        j--;
+      }
+    } else if (xTo > xFrom && yTo < yFrom) {
+      let j = yTo + 1;
+      for (let i = xFrom + 1; i < xTo; i++) {
+        if (chessBoard[i][j].isOccupied()) {
+          isPathFree = false;
+        }
+        j++;
+      }
+    } else if (xFrom > xTo && yFrom > yTo) {
+      let j = yTo + 1;
+      for (let i = xTo + 1; i < xFrom; i++) {
+        if (chessBoard[i][j].isOccupied()) {
+          isPathFree = false;
+        }
+        j++;
+      }
+    }
+
+    return isPathFree
+  }
 
   kingMoves() {
 
   }
 
-  bishopMoves() { }
 
   queenMoves() { }
 

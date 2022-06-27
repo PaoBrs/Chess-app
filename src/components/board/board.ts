@@ -56,9 +56,14 @@ export class Board {
   }
 
   public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
+    console.log(xTo)
+    console.log(yTo)
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
     const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
     const colorTo = this.chessBoard[xTo][yTo].piece?.color;
+    if (colorFrom === colorTo) {
+      return false
+    }
     let canMove = false;
 
     switch (type) {
@@ -68,7 +73,15 @@ export class Board {
         break;
 
       case 'rook':
-        canMove = this.moves.rookMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard, colorTo });
+        canMove = this.moves.rookMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
+        break;
+
+      case 'knight':
+        canMove = this.moves.knightMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
+        break;
+
+      case 'bishop':
+        canMove = this.moves.bishopMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
         break;
 
       default:
