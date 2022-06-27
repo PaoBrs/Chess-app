@@ -69,7 +69,7 @@ const Chessboard = () => {
   return (
     <>
       <div className='container'>
-        <div className='numberAxis main-axis'>{numbers.map((number, index) => <div className='number axis-item'>{number}</div>)}</div>
+        <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
         <hr className='break' />
         <div id='chessboard'>
           {positions.map((tile, index) =>
@@ -86,7 +86,7 @@ const Chessboard = () => {
             />)}
         </div>
       </div>
-      <div className='letterAxis main-axis'>{letters.map((letter, index) => <div className='letter axis-item'> {letter}</div>)}</div>
+      <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
     </>
 
   )

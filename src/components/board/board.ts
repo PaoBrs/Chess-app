@@ -1,6 +1,7 @@
 import { Tile, TileFactory } from './tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { Moves, MovesFactory } from '../../pieces/moves';
+import Chessboard from '../chessboard/Chessboard';
 
 export class Board {
   public chessBoard: Tile[][];
@@ -54,43 +55,20 @@ export class Board {
     return squares as Tile[][];
   }
 
-  // public getTileCartesian(x: number, y: number) {
-  //   if (x < 0 || x > 7 || y < 0 || y > 7) {
-  //     throw new Error("Invalid coordinates");
-  //   }
-
-  //   return this.chessBoard[x][y];
-
-  // }
-
-  // public getTilePGN(x: number, y: LettersAxis): Tile {
-  //   const dictionary = {
-  //     a: 0,
-  //     b: 1,
-  //     c: 2,
-  //     d: 3,
-  //     e: 4,
-  //     f: 5,
-  //     g: 6,
-  //     h: 7
-  //   }
-
-  //   if (x < 1 || x > 8 || !Object.keys(dictionary).includes(y)) {
-  //     throw new Error("Invalid coordinates");
-  //   }
-
-  //   return this.chessBoard[x - 1][dictionary[y]];
-  // }
-
   public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
-    const color = this.chessBoard[xFrom][yFrom].piece!.color;
+    const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
+    const colorTo = this.chessBoard[xTo][yTo].piece?.color;
     let canMove = false;
 
     switch (type) {
       case 'pawn':
-        canMove = this.moves.pawnMoves(color, xFrom, yFrom, xTo, yTo, isOccupied);
+        canMove = this.moves.pawnMoves({ colorFrom, colorTo, xFrom, yFrom, xTo, yTo, isOccupied, chessBoard: this.chessBoard });
 
+        break;
+
+      case 'rook':
+        canMove = this.moves.rookMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard, colorTo });
         break;
 
       default:
