@@ -143,16 +143,19 @@ export class Moves {
     return isPathFree
   }
 
+  queenMoves({ xFrom, yFrom, xTo, yTo, chessBoard }: RookMovesProps) {
+    const isDiagonalMoveValid = this.bishopMoves({ xFrom, yFrom, xTo, yTo, chessBoard })
+    const isHVMoveValid = this.rookMoves({ xFrom, yFrom, xTo, yTo, chessBoard })
+    return isDiagonalMoveValid || isHVMoveValid
+  }
+
   kingMoves() {
 
   }
 
-
-  queenMoves() { }
-
-
-
 }
+
+
 
 
 export class MovesFactory {

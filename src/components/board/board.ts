@@ -84,6 +84,10 @@ export class Board {
         canMove = this.moves.bishopMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
         break;
 
+      case 'queen':
+        canMove = this.moves.queenMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
+        break;
+
       default:
         break;
     }
