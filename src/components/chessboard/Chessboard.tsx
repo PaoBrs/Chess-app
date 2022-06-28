@@ -6,6 +6,7 @@ import { BoardFactory } from '../board/board';
 import { Tile } from '../board/tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { horizontalLines } from '../../utils/horizontalLines';
+import initialiseChessBoard from '../../utils/initalPosition';
 
 const dictionaryPGN: any = {
   pawn: '',

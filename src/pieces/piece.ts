@@ -14,11 +14,13 @@ export class Piece {
   color: string;
   img: string;
   type: ITypePiece;
+  hasMoved: boolean;
 
   constructor(color: string, img: string, type: ITypePiece) {
     this.color = color;
     this.img = img;
     this.type = type;
+    this.hasMoved = false;
 
   }
 

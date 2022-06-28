@@ -54,7 +54,6 @@ export class Moves {
 
     if (isSameRow) {
       if (yTo > yFrom) {
-        console.log(1)
         for (let i = yFrom + 1; i < yTo; i++) {
           if (chessBoard[xFrom][i].isOccupied()) {
             isPathFree = false
@@ -149,8 +148,59 @@ export class Moves {
     return isDiagonalMoveValid || isHVMoveValid
   }
 
-  kingMoves() {
+  kingMoves({ xFrom, yFrom, xTo, yTo, chessBoard }: RookMovesProps) {
+    const xDifference = Math.abs(xFrom - xTo);
+    const yDifference = Math.abs(yFrom - yTo);
+    let isPathFree = true;
+    let isSafe = true;
 
+    if (xDifference + yDifference === 1 || xDifference * yDifference === 1) {
+      return true
+    }
+
+    const hasKingMoved = chessBoard[xFrom][yFrom].piece!.hasMoved
+
+    if (hasKingMoved) return false
+
+    const hasRookRightMoved = chessBoard[xFrom][yFrom + 3].piece?.hasMoved
+    const hasRookLeftMoved = chessBoard[xFrom][yFrom - 4].piece?.hasMoved
+
+    //castling long 
+    if (yFrom > yTo && yDifference === 3) {
+      if (hasRookLeftMoved || hasRookLeftMoved === undefined) return false
+
+      for (let i = yTo; i < yFrom; i++) {
+        if (chessBoard[xFrom][i].isOccupied()) {
+          isPathFree = false
+        }
+      }
+
+      if (isPathFree) {
+        chessBoard[xFrom][yFrom - 2].piece = chessBoard[xFrom][yFrom - 4].piece
+        chessBoard[xFrom][yFrom - 4].piece = null;
+
+        return true;
+      }
+      return false;
+    }
+
+    //castling short 
+    if (yTo > yFrom && yDifference === 2) {
+      if (hasRookRightMoved || hasRookRightMoved === undefined) return false;
+
+      for (let i = yFrom + 1; i < yTo; i++) {
+        if (chessBoard[xFrom][i].isOccupied()) {
+          isPathFree = false
+        }
+      }
+      if (isPathFree) {
+        chessBoard[xFrom][yFrom + 1].piece = chessBoard[xFrom][yFrom + 3].piece
+        chessBoard[xFrom][yFrom + 3].piece = null;
+        return true;
+      }
+      return false;
+    }
+    return false
   }
 
 }

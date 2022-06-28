@@ -20,7 +20,7 @@ export class Board {
     for (let i = 0; i < squares.length; i++) {
       squares[i] = Array(8).fill(null)
     }
-    // console.log(squares)
+
     squares[0][0] = TileFactory.newTilePGN('r', 0, 'a');
     squares[0][1] = TileFactory.newTilePGN('n', 0, 'b');
     squares[0][2] = TileFactory.newTilePGN('b', 0, 'c');
@@ -56,14 +56,15 @@ export class Board {
   }
 
   public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
-    console.log(xTo)
-    console.log(yTo)
+
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
     const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
     const colorTo = this.chessBoard[xTo][yTo].piece?.color;
+
     if (colorFrom === colorTo) {
       return false
     }
+
     let canMove = false;
 
     switch (type) {
@@ -88,13 +89,18 @@ export class Board {
         canMove = this.moves.queenMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
         break;
 
+      case 'king':
+        canMove = this.moves.kingMoves({ xFrom, yFrom, xTo, yTo, chessBoard: this.chessBoard });
+        break;
+
       default:
         break;
     }
     if (canMove) {
-      console.log('moved')
+      this.chessBoard[xFrom][yFrom].piece!.hasMoved = true;
       this.chessBoard[xTo][yTo].piece = this.chessBoard[xFrom][yFrom].piece
       this.chessBoard[xFrom][yFrom].piece = null;
+
     }
 
   }

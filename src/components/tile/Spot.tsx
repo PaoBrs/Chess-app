@@ -37,6 +37,7 @@ const Spot = ({ number, image, type, x, y, setFrom, isValidFrom, setTo }: Props)
     }
 
     console.log(image)
+    console.log(number)
   }
 
   if (number % 2 === 0) {
