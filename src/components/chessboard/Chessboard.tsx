@@ -6,7 +6,6 @@ import { BoardFactory } from '../board/board';
 import { Tile } from '../board/tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { horizontalLines } from '../../utils/horizontalLines';
-import initialiseChessBoard from '../../utils/initalPosition';
 
 const dictionaryPGN: any = {
   pawn: '',
@@ -34,6 +33,7 @@ const Chessboard = () => {
   const [from, setFrom] = useState<Coordinates | null>(null)
   const [to, setTo] = useState<Coordinates | null>(null)
   const [isValidFrom, setIsValidFrom] = useState(false)
+  const [possibleMoves, setPossibleMoves] = useState<Coordinates[]>([])
 
   useEffect(() => {
     let linealBoard: Tile[] = []
@@ -47,6 +47,7 @@ const Chessboard = () => {
   useEffect(() => {
     if (from) {
       setIsValidFrom(true)
+      setPossibleMoves(boardPGN.moves.possibleMoves(from.x, from.y, boardPGN.chessBoard))
     } else {
       setIsValidFrom(false)
     }
@@ -56,16 +57,14 @@ const Chessboard = () => {
 
     if (from && to) {
       const tile = boardPGN.chessBoard[to.x][to.y];
-      console.log('PGN :', dictionaryPGN[boardPGN.chessBoard[from.x][from.y].piece!.type], numberToLetter[to.y], to.x + 1)
-      console.log(tile.isOccupied())
+      // console.log('PGN :', dictionaryPGN[boardPGN.chessBoard[from.x][from.y].piece!.type], numberToLetter[to.y], to.x + 1)
+      // console.log(tile.isOccupied())
       boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied())
       setFrom(null)
       setTo(null)
+      setPossibleMoves([])
     }
   }, [to, from])
-
-  // console.log(from)
-  // console.log(to)
 
   return (
     <>
@@ -81,9 +80,11 @@ const Chessboard = () => {
               number={horizontalLines.includes(index) ? index + 1 : index}
               image={tile.piece ? tile.piece.img : null}
               type={tile.piece ? tile.piece.type : null}
+              from={from}
               setFrom={setFrom}
               setTo={setTo}
               isValidFrom={isValidFrom}
+              possibleMoves={possibleMoves}
             />)}
         </div>
       </div>

@@ -6,6 +6,7 @@ export interface PawnMovesProps extends BasicMove {
   colorTo: string | undefined,
   isOccupied: boolean,
   chessBoard: Tile[][],
+  isChecking?: boolean,
 }
 
 export interface RookMovesProps extends BasicMove {
@@ -17,4 +18,9 @@ export interface BasicMove {
   yFrom: number,
   xTo: number,
   yTo: number,
+}
+
+export interface KingMovesProps extends BasicMove {
+  chessBoard: Tile[][],
+  isChecking?: boolean,
 }

@@ -1,5 +1,6 @@
 import './Tile.css'
 import { numberToLetter } from '../../utils/numberToLetter';
+import React, { useEffect, useState } from 'react';
 
 type Props = {
   number: number;
@@ -7,9 +8,11 @@ type Props = {
   type: string | null;
   x: number;
   y: number;
+  from: Coordinates | null;
   setFrom: (index: Coordinates | null) => void;
   isValidFrom: boolean;
   setTo: (index: Coordinates | null) => void;
+  possibleMoves: Coordinates[]
 
 }
 
@@ -19,8 +22,38 @@ interface Coordinates {
 }
 
 
-const Spot = ({ number, image, type, x, y, setFrom, isValidFrom, setTo }: Props) => {
+const Spot = ({ number, image, type, x, y, setFrom, from, isValidFrom, setTo, possibleMoves }: Props) => {
+
+  const [highlightMove, setHighlightMove] = useState(false)
+
+  const [activeSpot, setActiveSpot] = useState(false)
+
+
+  useEffect(() => {
+    setActiveSpot(from?.x === x && from?.y === y)
+  }, [from])
+
+  useEffect(() => {
+    let isHightlighted = false
+    possibleMoves.forEach(coord => {
+      if (coord.x === x && coord.y === y) {
+        isHightlighted = true
+      }
+    }
+    )
+    if (isHightlighted) {
+      setHighlightMove(true)
+    } else {
+      setHighlightMove(false)
+    }
+  }, [possibleMoves])
+
+
+
+
   const handlerClick = () => {
+    console.log({ from })
+    console.log(x, y)
     if (!isValidFrom) {
 
       if (image) {
@@ -41,9 +74,9 @@ const Spot = ({ number, image, type, x, y, setFrom, isValidFrom, setTo }: Props)
   }
 
   if (number % 2 === 0) {
-    return <button onClick={handlerClick} className='tile white-tile'>{image ? <img src={`/images/${image}`} alt='.' className='piece' /> : null}</button>
+    return <button onClick={handlerClick} className={`tile white-tile ${activeSpot ? 'activeSpot' : ''} ${highlightMove ? 'highlight-white' : ''}`}>{image ? <img src={`/images/${image}`} alt='.' className='piece' /> : null}</button>
   } else {
-    return <button onClick={handlerClick} className='tile black-tile'>{image ? <img src={`/images/${image}`} alt='.' className='piece' /> : null}</button>
+    return <button onClick={handlerClick} className={`tile black-tile ${activeSpot ? 'activeSpot' : ''} ${highlightMove ? 'highlight-black' : ''}`}>{image ? <img src={`/images/${image}`} alt='.' className='piece' /> : null}</button>
   }
 
 

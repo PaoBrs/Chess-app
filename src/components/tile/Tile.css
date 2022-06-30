@@ -24,3 +24,15 @@ border: solid 3px gray;
 .piece {
   height:70% ;
 }
+
+.highlight-white {
+  background-color: rgba(221, 111, 166, 0.506);
+}
+
+.highlight-black {
+  background-color: #5E6697;
+}
+
+.activeSpot{
+  background-color: rgba(198, 95, 232, 0.857);
+}
