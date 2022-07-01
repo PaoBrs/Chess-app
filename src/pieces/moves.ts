@@ -226,7 +226,7 @@ export class Moves {
       }
     } else if (xTo > xFrom && yTo < yFrom) {
       let j = yTo + 1;
-      for (let i = xFrom + 1; i < xTo; i++) {
+      for (let i = xTo - 1; i > xFrom; i--) {
         if (chessBoard[i][j].isOccupied()) {
           isPathFree = false;
         }
