@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Spot from '../tile/Spot';
 import './Chessboard.css'
 import { BoardFactory } from '../board/board';
 import { Tile } from '../board/tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { horizontalLines } from '../../utils/horizontalLines';
+import { SocketContext } from '../../context/SocketCreateContext';
 
 const dictionaryPGN: any = {
   pawn: '',
@@ -35,6 +36,10 @@ const Chessboard = () => {
   const [isValidFrom, setIsValidFrom] = useState(false)
   const [possibleMoves, setPossibleMoves] = useState<Coordinates[]>([])
 
+  const [hasFrontChanged, setHasFrontChanged] = useState<boolean>(false)
+
+  const { socket, online } = useContext(SocketContext)
+
   useEffect(() => {
     let linealBoard: Tile[] = []
     for (let i = 7; i >= 0; i--) {
@@ -57,14 +62,42 @@ const Chessboard = () => {
 
     if (from && to) {
       const tile = boardPGN.chessBoard[to.x][to.y];
-      // console.log('PGN :', dictionaryPGN[boardPGN.chessBoard[from.x][from.y].piece!.type], numberToLetter[to.y], to.x + 1)
-      // console.log(tile.isOccupied())
       boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied())
+      setHasFrontChanged(true)
       setFrom(null)
       setTo(null)
       setPossibleMoves([])
+
+      socket.emit('movePiece', from.x, from.y, to.x, to.y)
     }
   }, [to, from])
+
+  useEffect(() => {
+    console.log(positions)
+    socket.on('movePieceBack', (xFrom, yFrom, xTo, yTo) => {
+
+      console.log(hasFrontChanged)
+      const tile = boardPGN.chessBoard[xTo][yTo];
+      boardPGN.movePiece(xFrom, yFrom, xTo, yTo, tile.isOccupied())
+
+      let linealBoard: Tile[] = []
+      for (let i = 7; i >= 0; i--) {
+        linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+      }
+
+
+
+      setPositions(linealBoard)
+      console.log({ xFrom, yFrom, xTo, yTo })
+      setHasFrontChanged(false)
+
+    })
+
+    return () => {
+      socket.off('movePieceBack')
+    }
+  }, [socket])
+
 
   return (
     <>

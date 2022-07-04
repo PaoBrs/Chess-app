@@ -52,25 +52,25 @@ const Spot = ({ number, image, type, x, y, setFrom, from, isValidFrom, setTo, po
 
 
   const handlerClick = () => {
-    console.log({ from })
-    console.log(x, y)
+    // console.log({ from })
+    // console.log(x, y)
     if (!isValidFrom) {
 
       if (image) {
         setFrom({ x, y })
-        console.log('from: ', numberToLetter[y], x + 1)
+        // console.log('from: ', numberToLetter[y], x + 1)
       } else {
         setFrom(null)
       }
 
     } else {
       setTo({ x, y })
-      console.log('to: ', numberToLetter[y], x + 1)
+      // console.log('to: ', numberToLetter[y], x + 1)
 
     }
 
-    console.log(image)
-    console.log(number)
+    // console.log(image)
+    // console.log(number)
   }
 
   if (number % 2 === 0) {

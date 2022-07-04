@@ -56,7 +56,7 @@ export class Board {
   }
 
   public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
-
+    console.log('moved')
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
     const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
     const colorTo = this.chessBoard[xTo][yTo].piece?.color;
