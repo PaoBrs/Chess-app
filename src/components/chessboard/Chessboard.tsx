@@ -7,6 +7,8 @@ import { Tile } from '../board/tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { horizontalLines } from '../../utils/horizontalLines';
 import { SocketContext } from '../../context/SocketCreateContext';
+import { Button } from 'flowbite-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const dictionaryPGN: any = {
   pawn: '',
@@ -36,9 +38,9 @@ const Chessboard = () => {
   const [isValidFrom, setIsValidFrom] = useState(false)
   const [possibleMoves, setPossibleMoves] = useState<Coordinates[]>([])
 
-  const [hasFrontChanged, setHasFrontChanged] = useState<boolean>(false)
+  const { socket } = useContext(SocketContext)
 
-  const { socket, online } = useContext(SocketContext)
+  console.log(positions)
 
   useEffect(() => {
     let linealBoard: Tile[] = []
@@ -63,7 +65,6 @@ const Chessboard = () => {
     if (from && to) {
       const tile = boardPGN.chessBoard[to.x][to.y];
       boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied())
-      setHasFrontChanged(true)
       setFrom(null)
       setTo(null)
       setPossibleMoves([])
@@ -76,7 +77,6 @@ const Chessboard = () => {
     console.log(positions)
     socket.on('movePieceBack', (xFrom, yFrom, xTo, yTo) => {
 
-      console.log(hasFrontChanged)
       const tile = boardPGN.chessBoard[xTo][yTo];
       boardPGN.movePiece(xFrom, yFrom, xTo, yTo, tile.isOccupied())
 
@@ -85,11 +85,8 @@ const Chessboard = () => {
         linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
       }
 
-
-
       setPositions(linealBoard)
       console.log({ xFrom, yFrom, xTo, yTo })
-      setHasFrontChanged(false)
 
     })
 
@@ -101,27 +98,52 @@ const Chessboard = () => {
 
   return (
     <>
-      <div className='container'>
-        <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
-        <hr className='break' />
-        <div id='chessboard'>
-          {positions.map((tile, index) =>
-            <Spot
-              key={index}
-              x={tile.x}
-              y={tile.y}
-              number={horizontalLines.includes(index) ? index + 1 : index}
-              image={tile.piece ? tile.piece.img : null}
-              type={tile.piece ? tile.piece.type : null}
-              from={from}
-              setFrom={setFrom}
-              setTo={setTo}
-              isValidFrom={isValidFrom}
-              possibleMoves={possibleMoves}
-            />)}
+      <div className='flex flex-col-3 gap-x-20'>
+        <div>
+          <div>Room ID</div>
+          <div className='flex flex-col space-y-72 mt-12'>
+            <div className='fallen-pieces'></div>
+            <div className='fallen-pieces'></div>
+          </div>
         </div>
+        <div>
+          <div className='flex flex-row justify-center items-center gap-2 pb-4'><div className='bg-green-400 rounded-full w-6 h-6'></div>
+            <h5 className="text-2xl font-bold tracking-tight text-black text-center">
+              Player 1
+            </h5></div>
+          <div className='container'>
+            <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
+            <hr className='break' />
+            <div id='chessboard'>
+              {positions.map((tile, index) =>
+                <Spot
+                  key={index}
+                  x={tile.x}
+                  y={tile.y}
+                  number={horizontalLines.includes(index) ? index + 1 : index}
+                  image={tile.piece ? tile.piece.img : null}
+                  type={tile.piece ? tile.piece.type : null}
+                  from={from}
+                  setFrom={setFrom}
+                  setTo={setTo}
+                  isValidFrom={isValidFrom}
+                  possibleMoves={possibleMoves}
+                />)}
+            </div>
+          </div>
+          <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
+          <div className='flex flex-row justify-center items-center gap-2 pt-4'><div className='bg-black rounded-full w-6 h-6'></div>
+            <h5 className="text-2xl font-bold tracking-tight text-black text-center">
+              Player 2
+            </h5></div>
+        </div>
+        <div className='flex flex-col justify-between'>
+          <div className='flex flex-col text-3xl font-bold gap-4'>Turn <i className="fa-solid fa-chess fa-3x" /></div>
+
+          <Button gradientDuoTone="purpleToBlue" size="xl">
+            Save Match
+          </Button></div>
       </div>
-      <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
     </>
 
   )

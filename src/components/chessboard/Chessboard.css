@@ -1,9 +1,9 @@
 #chessboard {
   display: grid;
-  grid-template-columns: repeat(8, 100px);
-  grid-template-rows: repeat(8, 100px);
-  width: 800px;
-  height: 800px;
+  grid-template-columns: repeat(8, 70px);
+  grid-template-rows: repeat(8, 70px);
+  width: 570px;
+  height: 570px;
   background-color: #FFFFFF;
   border: solid 5px #26416D;
   
@@ -24,7 +24,7 @@ flex-direction: row;
 
 .number{
 
-height: 100px;
+height: 70px;
 width: 100%;
 
 }
@@ -46,7 +46,7 @@ width: 100%;
 .letterAxis{
 
   flex-direction: row;
-  width: 800px;
+  width: 560px;
   margin-left: 90px;
   margin-top: 10px;
   
@@ -78,4 +78,12 @@ width: 100%;
   align-items:center;
   border: solid 5px #26416D;
   font-size: 50px;
+}
+
+.fallen-pieces{
+  display: grid;
+  grid-template-columns: repeat(4, 40px);
+  grid-template-rows: repeat(4, 40px);
+  background-color: #FAF0EF;
+
 }

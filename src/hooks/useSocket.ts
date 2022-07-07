@@ -10,6 +10,7 @@ export const useSocket = (serverPath: string) => {
     const socketClient: Socket<ServerToClientEvents, ClientToServerEvents> = io(serverPath);
     return socketClient.connect()
   }, [serverPath]);
+
   const [online, setOnline] = useState(false);
 
   useEffect(() => {
