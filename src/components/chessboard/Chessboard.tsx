@@ -4,11 +4,11 @@ import Spot from '../tile/Spot';
 import './Chessboard.css'
 import { BoardFactory } from '../board/board';
 import { Tile } from '../board/tile';
-import { numberToLetter } from '../../utils/numberToLetter';
 import { horizontalLines } from '../../utils/horizontalLines';
 import { SocketContext } from '../../context/SocketCreateContext';
 import { Button } from 'flowbite-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ReactHowler from 'react-howler'
+
 
 const dictionaryPGN: any = {
   pawn: '',
@@ -37,10 +37,10 @@ const Chessboard = () => {
   const [to, setTo] = useState<Coordinates | null>(null)
   const [isValidFrom, setIsValidFrom] = useState(false)
   const [possibleMoves, setPossibleMoves] = useState<Coordinates[]>([])
+  const [turn, setTurn] = useState(boardPGN.turn)
+  const [isSoundErrorActive, setSoundErrorActive] = useState(false)
 
   const { socket } = useContext(SocketContext)
-
-  console.log(positions)
 
   useEffect(() => {
     let linealBoard: Tile[] = []
@@ -52,9 +52,17 @@ const Chessboard = () => {
 
 
   useEffect(() => {
+
     if (from) {
-      setIsValidFrom(true)
-      setPossibleMoves(boardPGN.moves.possibleMoves(from.x, from.y, boardPGN.chessBoard))
+      const colorFrom = boardPGN.chessBoard[from.x][from.y].piece!.color;
+      if (colorFrom === turn) {
+        setIsValidFrom(true)
+        setPossibleMoves(boardPGN.moves.possibleMoves(from.x, from.y, boardPGN.chessBoard))
+      } else {
+        setIsValidFrom(false)
+        setFrom(null)
+        setSoundErrorActive(true)
+      }
     } else {
       setIsValidFrom(false)
     }
@@ -68,25 +76,25 @@ const Chessboard = () => {
       setFrom(null)
       setTo(null)
       setPossibleMoves([])
-
+      setTurn(boardPGN.turn)
       socket.emit('movePiece', from.x, from.y, to.x, to.y)
+
     }
   }, [to, from])
 
   useEffect(() => {
-    console.log(positions)
     socket.on('movePieceBack', (xFrom, yFrom, xTo, yTo) => {
 
       const tile = boardPGN.chessBoard[xTo][yTo];
       boardPGN.movePiece(xFrom, yFrom, xTo, yTo, tile.isOccupied())
 
+      setTurn(boardPGN.turn)
       let linealBoard: Tile[] = []
       for (let i = 7; i >= 0; i--) {
         linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
       }
 
       setPositions(linealBoard)
-      console.log({ xFrom, yFrom, xTo, yTo })
 
     })
 
@@ -107,9 +115,10 @@ const Chessboard = () => {
           </div>
         </div>
         <div>
-          <div className='flex flex-row justify-center items-center gap-2 pb-4'><div className='bg-green-400 rounded-full w-6 h-6'></div>
+          <div className='flex flex-row justify-center items-center gap-2 pb-4'>
+            <div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'bg-black' : 'bg-green-300'}`}></div>
             <h5 className="text-2xl font-bold tracking-tight text-black text-center">
-              Player 1
+              Player 2
             </h5></div>
           <div className='container'>
             <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
@@ -132,18 +141,24 @@ const Chessboard = () => {
             </div>
           </div>
           <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
-          <div className='flex flex-row justify-center items-center gap-2 pt-4'><div className='bg-black rounded-full w-6 h-6'></div>
+          <div className='flex flex-row justify-center items-center gap-2 pt-4'><div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'bg-green-300' : 'bg-black'}`}></div>
             <h5 className="text-2xl font-bold tracking-tight text-black text-center">
-              Player 2
+              Player 1
             </h5></div>
         </div>
         <div className='flex flex-col justify-between'>
-          <div className='flex flex-col text-3xl font-bold gap-4'>Turn <i className="fa-solid fa-chess fa-3x" /></div>
+          <div className='flex flex-col text-3xl font-bold gap-4'>Turn
+            <i className={`fa-solid fa-chess fa-3x ${turn === 'white' ? 'text-white' : 'text-black'}`} />
+          </div>
 
           <Button gradientDuoTone="purpleToBlue" size="xl">
             Save Match
           </Button></div>
       </div>
+      <ReactHowler
+        src='/sounds/error.wav'
+        playing={isSoundErrorActive}
+        onEnd={() => setSoundErrorActive(false)} />
     </>
 
   )

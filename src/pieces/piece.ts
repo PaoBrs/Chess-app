@@ -1,5 +1,4 @@
 import { ITypePiece, LettersAxis, PGNCode } from "../interfaces/interface";
-import { Moves } from './moves';
 
 const pgnToName: any = {
   r: 'rook',
@@ -11,12 +10,12 @@ const pgnToName: any = {
 
 export class Piece {
 
-  color: string;
+  color: 'white' | 'black';
   img: string;
   type: ITypePiece;
   hasMoved: boolean;
 
-  constructor(color: string, img: string, type: ITypePiece) {
+  constructor(color: 'white' | 'black', img: string, type: ITypePiece) {
     this.color = color;
     this.img = img;
     this.type = type;
@@ -32,7 +31,7 @@ export class Piece {
 
 export class PieceFactory {
 
-  static newPiece(color: string, type: ITypePiece) {
+  static newPiece(color: 'white' | 'black', type: ITypePiece) {
     const image = (color === "white" ? `${type}_w.png` : `${type}_b.png`)
     return new Piece(color, image, type)
   }

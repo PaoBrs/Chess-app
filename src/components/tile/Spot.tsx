@@ -1,5 +1,4 @@
 import './Tile.css'
-import { numberToLetter } from '../../utils/numberToLetter';
 import React, { useEffect, useState } from 'react';
 
 type Props = {

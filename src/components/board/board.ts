@@ -1,16 +1,16 @@
 import { Tile, TileFactory } from './tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { Moves, MovesFactory } from '../../pieces/moves';
-import Chessboard from '../chessboard/Chessboard';
 
 export class Board {
   public chessBoard: Tile[][];
-  public moves: Moves
-
+  public moves: Moves;
+  public turn: "white" | "black";
 
   constructor() {
     this.chessBoard = this.setInitialPositions()
     this.moves = MovesFactory.newMoves()
+    this.turn = "white"
   }
 
 
@@ -56,14 +56,13 @@ export class Board {
   }
 
   public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
-    console.log('moved')
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
     const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
     const colorTo = this.chessBoard[xTo][yTo].piece?.color;
 
-    if (colorFrom === colorTo) {
-      return false
-    }
+    if (colorFrom !== this.turn) return false;
+
+    if (colorFrom === colorTo) return false;
 
     let canMove = false;
 
@@ -100,7 +99,7 @@ export class Board {
       this.chessBoard[xFrom][yFrom].piece!.hasMoved = true;
       this.chessBoard[xTo][yTo].piece = this.chessBoard[xFrom][yFrom].piece
       this.chessBoard[xFrom][yFrom].piece = null;
-
+      this.turn = this.turn === 'white' ? 'black' : 'white';
     }
 
   }

@@ -9,13 +9,13 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <AuthContextProvider>
-      <SocketProvider>
-        <App />
-      </SocketProvider>
-    </AuthContextProvider>
-  </React.StrictMode>
+
+  <AuthContextProvider>
+    <SocketProvider>
+      <App />
+    </SocketProvider>
+  </AuthContextProvider>
+
 
 );
 
