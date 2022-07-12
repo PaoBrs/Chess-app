@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:8080/api'
+const baseUrl = process.env.NODE_ENV === 'production' ?
+  process.env.REACT_APP_BASE_URL_PROD : process.env.REACT_APP_BASE_URL_DEV
 
 export const createOrLoginUser = async (username: string) => {
   const response = await fetch(`${baseUrl}/users/login`, {
