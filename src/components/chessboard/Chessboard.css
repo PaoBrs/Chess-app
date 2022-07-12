@@ -87,3 +87,10 @@ width: 100%;
   background-color: #FAF0EF;
 
 }
+
+.screen {
+  display: grid;
+  place-content: center;
+  height: 100vh;
+  background-color: #F5BEBD;
+}

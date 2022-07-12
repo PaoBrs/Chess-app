@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import { SocketProvider } from './context/SocketContext';
 import './index.css'
 import { AuthContextProvider } from './context/AuthContext/AuthContextProvider';
+import MainRouter from './components/mainRouter/MainRouter';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,9 +12,9 @@ root.render(
 
   <AuthContextProvider>
     <SocketProvider>
-      <App />
+      <MainRouter />
     </SocketProvider>
-  </AuthContextProvider>
+  </AuthContextProvider >
 
 
 );

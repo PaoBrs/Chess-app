@@ -105,7 +105,7 @@ const Chessboard = () => {
 
 
   return (
-    <>
+    <div className='screen'>
       <div className='flex flex-col-3 gap-x-20'>
         <div>
           <div>Room ID</div>
@@ -116,7 +116,7 @@ const Chessboard = () => {
         </div>
         <div>
           <div className='flex flex-row justify-center items-center gap-2 pb-4'>
-            <div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'bg-black' : 'bg-green-300'}`}></div>
+            <div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'transparent' : 'bg-green-300'}`}></div>
             <h5 className="text-2xl font-bold tracking-tight text-black text-center">
               Player 2
             </h5></div>
@@ -141,7 +141,7 @@ const Chessboard = () => {
             </div>
           </div>
           <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
-          <div className='flex flex-row justify-center items-center gap-2 pt-4'><div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'bg-green-300' : 'bg-black'}`}></div>
+          <div className='flex flex-row justify-center items-center gap-2 pt-4'><div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'bg-green-300' : 'transparent'}`}></div>
             <h5 className="text-2xl font-bold tracking-tight text-black text-center">
               Player 1
             </h5></div>
@@ -159,7 +159,7 @@ const Chessboard = () => {
         src='/sounds/error.wav'
         playing={isSoundErrorActive}
         onEnd={() => setSoundErrorActive(false)} />
-    </>
+    </div>
 
   )
 }

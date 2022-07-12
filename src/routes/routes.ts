@@ -1,3 +1,3 @@
-export const HOME = "/";
-export const LANDING_PAGE = "/landing"
-export const LOGIN = "/login"
+export const LOGIN = "/";
+export const LANDING_PAGE = "/landingpage"
+export const CHESS_GAME = "/chessboard"
