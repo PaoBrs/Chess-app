@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { CHESS_GAME } from '../routes/routes';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext, Game } from '../context/AuthContext/AuthCreateContext';
 import { getActiveGames } from '../services/chessboardServices';
 import { calcNumberOfPlayers } from '../utils/calcNumberOfPlayers';
@@ -9,6 +9,7 @@ const LandingPage = () => {
 
   const { startCreateGame } = useContext(AuthContext)
   const [activeGames, setActiveGames] = useState<Game[]>([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     getActiveGames().then((games) => { setActiveGames(games); });
@@ -16,7 +17,7 @@ const LandingPage = () => {
 
 
   const handleClick = () => {
-    startCreateGame()
+    startCreateGame().then(() => { navigate(CHESS_GAME) })
   }
   return (
     <div className='screen'>
