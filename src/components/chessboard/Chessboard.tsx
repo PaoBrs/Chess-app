@@ -106,6 +106,9 @@ const Chessboard = () => {
 
   return (
     <div className='screen'>
+      <div className='flex justify-end pb-10'>
+        <button type="button" className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
+      </div>
       <div className='flex flex-col-3 gap-x-20'>
         <div>
           <div>Room ID</div>
