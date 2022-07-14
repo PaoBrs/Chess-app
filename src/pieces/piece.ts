@@ -31,11 +31,6 @@ export class Piece {
 
 export class PieceFactory {
 
-  static newPiece(color: 'white' | 'black', type: ITypePiece) {
-    const image = (color === "white" ? `${type}_w.png` : `${type}_b.png`)
-    return new Piece(color, image, type)
-  }
-
   static newPiecePGN(type: PGNCode, x: number, y: LettersAxis) {
     let image;
     if (type === '') {
@@ -51,13 +46,12 @@ export class PieceFactory {
     return new Piece(color, image, 'pawn')
   }
 
+  static newPieceByTypeAndColor(color: 'white' | 'black', type: ITypePiece) {
+    const image = (color === "white" ? `${type}_w.png` : `${type}_b.png`)
+    return new Piece(color, image, type)
+  }
 
-  // static moveTo(board: (Piece | null)[], from: number, to: number, setBoard: (board: (Piece | null)[]) => void) {
-  //   const piece = board[from];
-  //   board[from] = null;
-  //   board[to] = piece;
-  //   setBoard([...board])
-  // }
+
 
 
 }

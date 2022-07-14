@@ -31,25 +31,24 @@ const LandingPage = () => {
           <button type="button" className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
         </div>
 
-        <div id="alert-2" className="flex p-2 justify-center" role="alert">
-          <div id="alert-3" className="flex p-4 mb-4 bg-green-100 rounded-lg dark:bg-green-200" role="alert">
-            <svg className="flex-shrink-0 w-5 h-5 text-green-700 dark:text-green-800" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-            <div className="ml-3 text-sm font-medium text-green-700 dark:text-green-800">
+        <div id="alert-2" className="flex justify-center " role="alert">
+          <div id="alert-3" className=" w-full flex p-4 mb-4 bg-yellow-100 rounded-lg" role="alert">
+            <svg className="flex-shrink-0 w-5 h-5 text-yellow-700 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+            <div className="ml-3 text-sm font-medium text-yellow-700">
               Do you want to continue with last match?
             </div>
             <div className='flex gap-4 pl-2'>
-              <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-green-100 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex h-8 w-8 " data-dismiss-target="#alert-3" aria-label="Close">
+              <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8 " data-dismiss-target="#alert-3" aria-label="Close">
                 Yes
               </button>
-              <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-green-100 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex h-8 w-8" data-dismiss-target="#alert-3" aria-label="Close">
+              <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8" data-dismiss-target="#alert-3" aria-label="Close">
                 No
               </button>
             </div>
           </div>
         </div>
 
-        <div className='flex flex-col-3 gap-10'>
-          <div></div>
+        <div className='flex flex-col-2 gap-10'>
           <div className=" p-4 max-w-sm bg-white rounded-lg border shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700">
             <p className="text-sm font-normal text-gray-500 dark:text-gray-400 pb-2">Connect with other players in active games or create a new one.</p>
 
@@ -64,7 +63,7 @@ const LandingPage = () => {
             <h5 className="mb-3 text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
               Active Games
             </h5>
-            <ul className="my-4 space-y-3">
+            <ul className="my-4 space-y-3 h-96 overflow-y-scroll">
               {activeGames.map((game) => {
                 return (
                   <li key={game._id}>
@@ -78,8 +77,6 @@ const LandingPage = () => {
                     </div>
                   </li>)
               })}
-
-
             </ul>
 
             <form>
@@ -93,13 +90,13 @@ const LandingPage = () => {
               </div>
             </form>
           </div>
-          <div>
 
+          <div>
             <div className="p-4 max-w-sm bg-white rounded-lg border shadow-md sm:p-6  w-96">
               <h5 className="mb-3 text-base font-semibold text-gray-900 lg:text-xl ">
                 Match History
               </h5>
-              <ul className="my-4 space-y-3">
+              <ul className="my-4 space-y-3 h-[550px]">
                 <li>
                   <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
                     <span className="flex-1 ml-3 whitespace-nowrap">Room</span>

@@ -1,5 +1,5 @@
 import { Piece, PieceFactory } from '../../pieces/piece';
-import { PGNCode, LettersAxis } from '../../interfaces/interface';
+import { PGNCode, LettersAxis, ITypePiece } from '../../interfaces/interface';
 import { letterToNumber } from '../../utils/letterToNumber';
 
 export class Tile {
@@ -23,5 +23,10 @@ export class TileFactory {
 
     const piece = PieceFactory.newPiecePGN(type, x, y)
     return new Tile(x, letterToNumber[y], piece)
+  }
+
+  static newTileWithPieceCoords(x: number, y: number, color: 'white' | 'black', type: ITypePiece) {
+    const piece = PieceFactory.newPieceByTypeAndColor(color, type)
+    return new Tile(x, y, piece)
   }
 }
