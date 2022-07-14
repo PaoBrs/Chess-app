@@ -45,22 +45,25 @@ const Chessboard = () => {
 
   const { socket } = useContext(SocketContext)
 
+
   useEffect(() => {
-    // if (game) {
-    //   boardPGN.generateBoardFromBackend(game.positions)
+    if (game) {
+      boardPGN.generateBoardFromBackend(game.positions)
+
+
+      let linealBoard: Tile[] = []
+      for (let i = 7; i >= 0; i--) {
+        linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+      }
+      setPositions(linealBoard)
+      console.log('????', linealBoard)
+    }
 
     //   let linealBoard: Tile[] = []
     //   for (let i = 7; i >= 0; i--) {
     //     linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
     //   }
     //   setPositions(linealBoard)
-    // }
-
-    let linealBoard: Tile[] = []
-    for (let i = 7; i >= 0; i--) {
-      linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
-    }
-    setPositions(linealBoard)
 
   }, [])
 
@@ -144,19 +147,21 @@ const Chessboard = () => {
             <hr className='break' />
             <div id='chessboard'>
               {positions.length > 0 && positions.map((tile, index) => {
-                return <Spot
-                  key={index}
-                  x={tile.x}
-                  y={tile.y}
-                  number={horizontalLines.includes(index) ? index + 1 : index}
-                  image={tile.piece ? tile.piece.img : null}
-                  type={tile.piece ? tile.piece.type : null}
-                  from={from}
-                  setFrom={setFrom}
-                  setTo={setTo}
-                  isValidFrom={isValidFrom}
-                  possibleMoves={possibleMoves}
-                />
+                if (tile) {
+                  return <Spot
+                    key={index}
+                    x={tile.x}
+                    y={tile.y}
+                    number={horizontalLines.includes(index) ? index + 1 : index}
+                    image={tile.piece ? tile.piece.img : null}
+                    type={tile.piece ? tile.piece.type : null}
+                    from={from}
+                    setFrom={setFrom}
+                    setTo={setTo}
+                    isValidFrom={isValidFrom}
+                    possibleMoves={possibleMoves}
+                  />
+                }
               })}
             </div>
           </div>
