@@ -1,6 +1,7 @@
 import { Tile, TileFactory } from './tile';
 import { numberToLetter } from '../../utils/numberToLetter';
 import { Moves, MovesFactory } from '../../pieces/moves';
+import { PiecePosition } from '../../context/AuthContext/AuthCreateContext';
 
 export class Board {
   public chessBoard: Tile[][];
@@ -55,6 +56,20 @@ export class Board {
     return squares as Tile[][];
   }
 
+  public generateBoardFromBackend(positionsBackend: PiecePosition[]) {
+    const squares = Array(8).fill(null)
+
+    for (let i = 0; i < squares.length; i++) {
+      squares[i] = Array(8).fill(null)
+    }
+
+    positionsBackend.forEach((pos) => {
+      squares[pos.x][pos.y] = TileFactory.newTileWithPieceCoords(pos.x, pos.y, pos.color, pos.type)
+    })
+    this.chessBoard = squares
+    return squares as Tile[][];
+  }
+
   public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
     const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
@@ -103,6 +118,37 @@ export class Board {
     }
 
   }
+
+  public fromObjectToJson(chess: Tile[][]) {
+
+    const linealBoard = this.BoardToLineal(chess)
+
+    let chessJson: PiecePosition[] = []
+
+    linealBoard.forEach((tile) => {
+      if (tile.isOccupied()) {
+        chessJson.push({
+          x: tile.x,
+          y: tile.y,
+          color: tile.piece!.color,
+          type: tile.piece!.type
+        })
+      }
+    })
+
+    return chessJson;
+  }
+
+  public BoardToLineal(chess: Tile[][]) {
+
+    let linealBoard: Tile[] = []
+    for (let i = 7; i >= 0; i--) {
+      linealBoard = linealBoard.concat(chess[i])
+    }
+
+    return linealBoard
+
+  }
 }
 
 export class BoardFactory {
@@ -110,4 +156,6 @@ export class BoardFactory {
   static newBoard() {
     return new Board();
   }
+
+
 }

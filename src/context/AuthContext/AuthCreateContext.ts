@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { ITypePiece } from '../../interfaces/interface';
 
 export interface AuthProps {
   user: User | null,
@@ -12,17 +13,31 @@ export interface User {
   _id: string;
 }
 
+
 export interface Game {
-  _id: string;
   roomCode: string;
   player1: string;
   player2: string;
-  positions: any[];
+  positions: PiecePosition[];
   history: any[];
   result: string;
   isCompleted: boolean;
+  _id: string;
   __v: number;
 }
+
+export interface PiecePosition {
+  x: number;
+  y: number;
+  color: 'white' | 'black';
+  type: ITypePiece;
+}
+
+export enum Color {
+  Black = "black",
+  White = "white",
+}
+
 
 
 

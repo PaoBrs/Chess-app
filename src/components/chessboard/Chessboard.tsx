@@ -8,6 +8,7 @@ import { horizontalLines } from '../../utils/horizontalLines';
 import { SocketContext } from '../../context/SocketCreateContext';
 import { Button } from 'flowbite-react';
 import ReactHowler from 'react-howler'
+import { AuthContext } from '../../context/AuthContext/AuthCreateContext';
 
 
 const dictionaryPGN: any = {
@@ -32,6 +33,8 @@ interface Coordinates {
 
 const Chessboard = () => {
 
+  const { game } = useContext(AuthContext)
+
   const [positions, setPositions] = useState<Tile[]>([])
   const [from, setFrom] = useState<Coordinates | null>(null)
   const [to, setTo] = useState<Coordinates | null>(null)
@@ -43,11 +46,22 @@ const Chessboard = () => {
   const { socket } = useContext(SocketContext)
 
   useEffect(() => {
+    // if (game) {
+    //   boardPGN.generateBoardFromBackend(game.positions)
+
+    //   let linealBoard: Tile[] = []
+    //   for (let i = 7; i >= 0; i--) {
+    //     linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+    //   }
+    //   setPositions(linealBoard)
+    // }
+
     let linealBoard: Tile[] = []
     for (let i = 7; i >= 0; i--) {
       linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
     }
     setPositions(linealBoard)
+
   }, [])
 
 
@@ -73,11 +87,13 @@ const Chessboard = () => {
     if (from && to) {
       const tile = boardPGN.chessBoard[to.x][to.y];
       boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied())
+
       setFrom(null)
       setTo(null)
       setPossibleMoves([])
       setTurn(boardPGN.turn)
       socket.emit('movePiece', from.x, from.y, to.x, to.y)
+      socket.emit('boardChange', boardPGN.fromObjectToJson(boardPGN.chessBoard), game!.roomCode)
 
     }
   }, [to, from])
@@ -127,8 +143,8 @@ const Chessboard = () => {
             <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
             <hr className='break' />
             <div id='chessboard'>
-              {positions.map((tile, index) =>
-                <Spot
+              {positions.length > 0 && positions.map((tile, index) => {
+                return <Spot
                   key={index}
                   x={tile.x}
                   y={tile.y}
@@ -140,7 +156,8 @@ const Chessboard = () => {
                   setTo={setTo}
                   isValidFrom={isValidFrom}
                   possibleMoves={possibleMoves}
-                />)}
+                />
+              })}
             </div>
           </div>
           <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
