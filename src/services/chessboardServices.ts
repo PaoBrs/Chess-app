@@ -18,7 +18,7 @@ export const createGame = async (player1: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      roomCode: Math.round(Math.random() * 500000000),
+      roomCode: Math.round(Math.random() * 99999),
       player1
     })
   })
@@ -34,6 +34,23 @@ export const getActiveGames = async () => {
 
   if (!response.ok) {
     return new Error('Error getting active games')
+  }
+  return response.json()
+}
+
+export const getCreatedGame = async (roomCode: string | number, player2: string) => {
+  const response = await fetch(`${baseUrl}/games/join`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      roomCode,
+      player2
+    })
+  }
+  )
+
+  if (!response.ok) {
+    return new Error('Error finding Game')
   }
   return response.json()
 }

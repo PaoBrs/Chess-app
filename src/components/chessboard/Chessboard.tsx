@@ -56,16 +56,9 @@ const Chessboard = () => {
         linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
       }
       setPositions(linealBoard)
-      console.log('????', linealBoard)
     }
 
-    //   let linealBoard: Tile[] = []
-    //   for (let i = 7; i >= 0; i--) {
-    //     linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
-    //   }
-    //   setPositions(linealBoard)
-
-  }, [])
+  }, [game])
 
 
   useEffect(() => {
@@ -98,6 +91,7 @@ const Chessboard = () => {
       socket.emit('movePiece', from.x, from.y, to.x, to.y)
       socket.emit('boardChange', boardPGN.fromObjectToJson(boardPGN.chessBoard), game!.roomCode)
 
+
     }
   }, [to, from])
 
@@ -113,6 +107,17 @@ const Chessboard = () => {
         linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
       }
 
+      setPositions(linealBoard)
+    })
+
+    socket.on('boardChangedBack', (board) => {
+
+      boardPGN.generateBoardFromBackend(board)
+
+      let linealBoard: Tile[] = []
+      for (let i = 7; i >= 0; i--) {
+        linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+      }
       setPositions(linealBoard)
 
     })

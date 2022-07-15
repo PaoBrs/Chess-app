@@ -7,8 +7,9 @@ import { calcNumberOfPlayers } from '../utils/calcNumberOfPlayers';
 
 const LandingPage = () => {
 
-  const { startCreateGame } = useContext(AuthContext)
+  const { startCreateGame, startGettingGame, user } = useContext(AuthContext)
   const [activeGames, setActiveGames] = useState<Game[]>([])
+  const [roomCode, setRoomCode] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -19,12 +20,20 @@ const LandingPage = () => {
     startCreateGame().then(() => { navigate(CHESS_GAME) })
   }
 
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setRoomCode(e.currentTarget.value)
+  }
+
+  const handleJoinGame = () => {
+    if (roomCode.length >= 5 && user) {
+      startGettingGame(roomCode, user.username).then(() => { navigate(CHESS_GAME) })
+    }
+  }
+
+
+
   return (
     <div>
-
-
-
-
       <div className='screen'>
 
         <div className='flex justify-end pt-4 pr-4'>
@@ -85,8 +94,18 @@ const LandingPage = () => {
                 <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                   <i className="fa-solid fa-chess fa-2x pb-2 text-gray-300" />
                 </div>
-                <input type="search" id="search" className="block p-4  pl-12 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter Room Code" required />
-                <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Join</button>
+                <input
+                  type="search"
+                  id="search"
+                  value={roomCode}
+                  onChange={handleChange}
+                  className="block p-4  pl-12 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Enter Room Code"
+                  required />
+                <button
+                  type="button"
+                  onClick={handleJoinGame}
+                  className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Join</button>
               </div>
             </form>
           </div>

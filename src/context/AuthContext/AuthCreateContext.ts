@@ -6,6 +6,7 @@ export interface AuthProps {
   game: Game | null,
   startLogin: (username: string) => Promise<void>
   startCreateGame: () => Promise<any>
+  startGettingGame: (roomCode: string | number, player2: string) => Promise<any>
 }
 
 export interface User {

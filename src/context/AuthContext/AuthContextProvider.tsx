@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 import { AuthContext, User, Game } from './AuthCreateContext';
 import { authReducer } from './AuthReducer';
-import { createOrLoginUser, createGame } from '../../services/chessboardServices';
+import { createOrLoginUser, createGame, getCreatedGame } from '../../services/chessboardServices';
 
 interface Props {
   children: React.ReactNode,
@@ -35,6 +35,14 @@ export const AuthContextProvider = ({ children }: Props) => {
     dispatch({ type: 'createGame', payload: game })
   }
 
+  const startGettingGame = async (roomCode: string | number, player2: string) => {
+    const game = await getCreatedGame(roomCode, player2);
+    console.log(game)
+    localStorage.setItem('game', JSON.stringify(game))
+
+    dispatch({ type: 'createGame', payload: game })
+  }
+
   //missing: enter a room by roomcode
   //missing: change active game in useReducer
 
@@ -43,7 +51,8 @@ export const AuthContextProvider = ({ children }: Props) => {
       {
         ...state,
         startLogin,
-        startCreateGame
+        startCreateGame,
+        startGettingGame,
       }
     }>
       {children}

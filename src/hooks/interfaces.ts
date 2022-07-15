@@ -2,6 +2,7 @@ import { PiecePosition } from '../context/AuthContext/AuthCreateContext';
 
 export interface ServerToClientEvents {
   movePieceBack: (xFrom: number, yFrom: number, xTo: number, yTo: number) => void;
+  boardChangedBack: (board: PiecePosition[]) => void;
 }
 
 export interface ClientToServerEvents {

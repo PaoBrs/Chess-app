@@ -8,8 +8,8 @@ type Props = {
 
 export const SocketProvider = ({ children }: Props) => {
 
-  const { socket, online } = useSocket('https://quiet-dusk-46720.herokuapp.com/');
-  // const { socket, online } = useSocket('http://localhost:8080');
+  // const { socket, online } = useSocket('https://quiet-dusk-46720.herokuapp.com/');
+  const { socket, online } = useSocket('http://localhost:8080');
 
   return (
     <SocketContext.Provider value={{ socket, online }
