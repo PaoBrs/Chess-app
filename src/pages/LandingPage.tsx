@@ -30,6 +30,12 @@ const LandingPage = () => {
     }
   }
 
+  const handleJoinRoom = (roomCode: string) => {
+    if (user) {
+      startGettingGame(roomCode, user.username).then(() => { navigate(CHESS_GAME) })
+    }
+  }
+
 
 
   return (
@@ -80,7 +86,9 @@ const LandingPage = () => {
                       <i className="fa-solid fa-game-board fa-7x text-gray-500" />
                       <span className="flex-1 ml-3 whitespace-nowrap">
                         Room {game.roomCode}<span className={`${calcNumberOfPlayers(game.player1, game.player2) === 1 ? 'bg-green-300 text-green-700' : 'bg-gray-200 text-gray-500'}  rounded inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium`}> {`${calcNumberOfPlayers(game.player1, game.player2)}/2`} </span></span>
-                      <button className={`inline-flex items-center justify-center px-4 py-2 ml-3 text-xs font-medium  ${calcNumberOfPlayers(game.player1, game.player2) === 1 ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-500'} rounded`}>
+                      <button
+                        onClick={() => handleJoinRoom(game.roomCode)}
+                        className={`inline-flex items-center justify-center px-4 py-2 ml-3 text-xs font-medium  ${calcNumberOfPlayers(game.player1, game.player2) === 1 ? 'bg-blue-700 text-white' : 'bg-gray-200 text-gray-500'} rounded`}>
                         Join
                       </button>
                     </div>
