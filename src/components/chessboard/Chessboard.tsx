@@ -11,16 +11,6 @@ import ReactHowler from 'react-howler'
 import { AuthContext } from '../../context/AuthContext/AuthCreateContext';
 
 
-const dictionaryPGN: any = {
-  pawn: '',
-  rook: 'r',
-  bishop: 'b',
-  queen: 'q',
-  king: 'k',
-  knight: 'n'
-
-}
-
 const boardPGN = BoardFactory.newBoard()
 
 const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -33,7 +23,7 @@ interface Coordinates {
 
 const Chessboard = () => {
 
-  const { game } = useContext(AuthContext)
+  const { game, user } = useContext(AuthContext)
 
   const [positions, setPositions] = useState<Tile[]>([])
   const [from, setFrom] = useState<Coordinates | null>(null)
@@ -42,6 +32,7 @@ const Chessboard = () => {
   const [possibleMoves, setPossibleMoves] = useState<Coordinates[]>([])
   const [turn, setTurn] = useState(boardPGN.turn)
   const [isSoundErrorActive, setSoundErrorActive] = useState(false)
+  const [colorPlayer, setColorPlayer] = useState<'white' | 'black'>('white')
 
   const { socket } = useContext(SocketContext)
 
@@ -50,12 +41,16 @@ const Chessboard = () => {
     if (game) {
       boardPGN.generateBoardFromBackend(game.positions)
 
-
       let linealBoard: Tile[] = []
       for (let i = 7; i >= 0; i--) {
         linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
       }
       setPositions(linealBoard)
+    }
+    if (game?.player1 === user?.username) {
+      setColorPlayer('white')
+    } else if (game?.player2 === user?.username) {
+      setColorPlayer('black')
     }
 
   }, [game])
@@ -65,7 +60,7 @@ const Chessboard = () => {
 
     if (from) {
       const colorFrom = boardPGN.chessBoard[from.x][from.y].piece!.color;
-      if (colorFrom === turn) {
+      if (colorFrom === turn && colorFrom === colorPlayer) {
         setIsValidFrom(true)
         setPossibleMoves(boardPGN.moves.possibleMoves(from.x, from.y, boardPGN.chessBoard))
       } else {
@@ -82,7 +77,7 @@ const Chessboard = () => {
 
     if (from && to) {
       const tile = boardPGN.chessBoard[to.x][to.y];
-      boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied())
+      boardPGN.movePiece(from.x, from.y, to.x, to.y, tile.isOccupied(), colorPlayer)
 
       setFrom(null)
       setTo(null)
@@ -91,23 +86,25 @@ const Chessboard = () => {
       socket.emit('movePiece', from.x, from.y, to.x, to.y)
       socket.emit('boardChange', boardPGN.fromObjectToJson(boardPGN.chessBoard), game!.roomCode)
 
-
     }
   }, [to, from])
 
   useEffect(() => {
     socket.on('movePieceBack', (xFrom, yFrom, xTo, yTo) => {
+      console.log(turn)
+      const tileFrom = boardPGN.chessBoard[xFrom][yFrom];
+      if (tileFrom.isOccupied()) {
+        const tileTo = boardPGN.chessBoard[xTo][yTo];
+        boardPGN.movePiece(xFrom, yFrom, xTo, yTo, tileTo.isOccupied(), colorPlayer)
 
-      const tile = boardPGN.chessBoard[xTo][yTo];
-      boardPGN.movePiece(xFrom, yFrom, xTo, yTo, tile.isOccupied())
+        setTurn(boardPGN.turn)
+        let linealBoard: Tile[] = []
+        for (let i = 7; i >= 0; i--) {
+          linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+        }
 
-      setTurn(boardPGN.turn)
-      let linealBoard: Tile[] = []
-      for (let i = 7; i >= 0; i--) {
-        linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+        setPositions(linealBoard)
       }
-
-      setPositions(linealBoard)
     })
 
     socket.on('boardChangedBack', (board) => {
@@ -152,21 +149,19 @@ const Chessboard = () => {
             <hr className='break' />
             <div id='chessboard'>
               {positions.map((tile, index) => {
-                if (tile) {
-                  return <Spot
-                    key={index}
-                    x={tile.x}
-                    y={tile.y}
-                    number={horizontalLines.includes(index) ? index + 1 : index}
-                    image={tile.piece ? tile.piece.img : null}
-                    type={tile.piece ? tile.piece.type : null}
-                    from={from}
-                    setFrom={setFrom}
-                    setTo={setTo}
-                    isValidFrom={isValidFrom}
-                    possibleMoves={possibleMoves}
-                  />
-                }
+                return <Spot
+                  key={index}
+                  x={tile.x}
+                  y={tile.y}
+                  number={horizontalLines.includes(index) ? index + 1 : index}
+                  image={tile.piece ? tile.piece.img : null}
+                  type={tile.piece ? tile.piece.type : null}
+                  from={from}
+                  setFrom={setFrom}
+                  setTo={setTo}
+                  isValidFrom={isValidFrom}
+                  possibleMoves={possibleMoves}
+                />
               })}
             </div>
           </div>

@@ -76,12 +76,14 @@ export class Board {
     return squares as Tile[][];
   }
 
-  public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean) {
+  public movePiece(xFrom: number, yFrom: number, xTo: number, yTo: number, isOccupied: boolean, colorPlayer: 'white' | 'black') {
     const type = this.chessBoard[xFrom][yFrom].piece!.type;
     const colorFrom = this.chessBoard[xFrom][yFrom].piece!.color;
     const colorTo = this.chessBoard[xTo][yTo].piece?.color;
 
     if (colorFrom !== this.turn) return false;
+
+    // if (colorFrom !== colorPlayer) return false;
 
     if (colorFrom === colorTo) return false;
 

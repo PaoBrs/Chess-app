@@ -25,7 +25,7 @@ const LandingPage = () => {
   }
 
   const handleJoinGame = () => {
-    if (roomCode.length >= 5 && user) {
+    if (roomCode.length >= 1 && user) {
       startGettingGame(roomCode, user.username).then(() => { navigate(CHESS_GAME) })
     }
   }
