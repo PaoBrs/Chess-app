@@ -146,7 +146,7 @@ const Chessboard = () => {
             <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
             <hr className='break' />
             <div id='chessboard'>
-              {positions.length > 0 && positions.map((tile, index) => {
+              {positions.map((tile, index) => {
                 if (tile) {
                   return <Spot
                     key={index}

@@ -63,6 +63,12 @@ export class Board {
       squares[i] = Array(8).fill(null)
     }
 
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        squares[i][j] = TileFactory.newTile(i, j, null);
+      }
+    }
+
     positionsBackend.forEach((pos) => {
       squares[pos.x][pos.y] = TileFactory.newTileWithPieceCoords(pos.x, pos.y, pos.color, pos.type)
     })
