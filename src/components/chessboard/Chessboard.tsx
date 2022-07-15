@@ -127,12 +127,13 @@ const Chessboard = () => {
 
   return (
     <div className='screen'>
-      <div className='flex justify-end pb-10'>
+      <div className='flex justify-between pb-10'>
+        <div className='text-4xl font-bold tracking-tight text-black'>Room ID: {game?.roomCode}</div>
         <button type="button" className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
       </div>
       <div className='flex flex-col-3 gap-x-20'>
         <div>
-          <div>Room ID</div>
+
           <div className='flex flex-col space-y-72 mt-12'>
             <div className='fallen-pieces'></div>
             <div className='fallen-pieces'></div>
