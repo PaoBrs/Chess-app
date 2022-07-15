@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { CHESS_GAME } from '../routes/routes';
+import { CHESS_GAME, LOGIN } from '../routes/routes';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext, Game } from '../context/AuthContext/AuthCreateContext';
 import { getActiveGames } from '../services/chessboardServices';
@@ -7,13 +7,18 @@ import { calcNumberOfPlayers } from '../utils/calcNumberOfPlayers';
 
 const LandingPage = () => {
 
-  const { startCreateGame, startGettingGame, user } = useContext(AuthContext)
+  const { startCreateGame, startGettingGame, user, startLogout } = useContext(AuthContext)
   const [activeGames, setActiveGames] = useState<Game[]>([])
   const [roomCode, setRoomCode] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
-    getActiveGames().then((games) => { setActiveGames(games); });
+    if (!user) {
+      navigate(LOGIN)
+    } else {
+      getActiveGames().then((games) => { setActiveGames(games); });
+    }
+
   }, [])
 
   const handleClick = () => {
@@ -36,6 +41,11 @@ const LandingPage = () => {
     }
   }
 
+  const handleLogout = () => {
+    startLogout()
+    navigate(LOGIN)
+  }
+
 
 
   return (
@@ -43,7 +53,10 @@ const LandingPage = () => {
       <div className='screen'>
 
         <div className='flex justify-end pt-4 pr-4'>
-          <button type="button" className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
         </div>
 
         <div id="alert-2" className="flex justify-center " role="alert">

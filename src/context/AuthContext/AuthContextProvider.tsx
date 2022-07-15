@@ -28,10 +28,24 @@ export const AuthContextProvider = ({ children }: Props) => {
     dispatch({ type: 'auth-login', payload: user })
   }
 
+  const startLogout = () => {
+    localStorage.clear()
+    dispatch({ type: 'auth-logout' })
+  }
+
+  const setLoggedUser = (user: User) => {
+    dispatch({ type: 'auth-login', payload: user })
+  }
+
   const startCreateGame = async () => {
     const game = await createGame(state.user!.username);
     localStorage.setItem('game', JSON.stringify(game))
+    localStorage.setItem('turn', 'white')
 
+    dispatch({ type: 'createGame', payload: game })
+  }
+
+  const setCurrentGame = (game: Game) => {
     dispatch({ type: 'createGame', payload: game })
   }
 
@@ -53,6 +67,9 @@ export const AuthContextProvider = ({ children }: Props) => {
         startLogin,
         startCreateGame,
         startGettingGame,
+        setLoggedUser,
+        setCurrentGame,
+        startLogout,
       }
     }>
       {children}

@@ -8,7 +8,9 @@ import { horizontalLines } from '../../utils/horizontalLines';
 import { SocketContext } from '../../context/SocketCreateContext';
 import { Button } from 'flowbite-react';
 import ReactHowler from 'react-howler'
-import { AuthContext } from '../../context/AuthContext/AuthCreateContext';
+import { AuthContext, User, Game } from '../../context/AuthContext/AuthCreateContext';
+import { useNavigate } from 'react-router-dom';
+import { LOGIN, LANDING_PAGE } from '../../routes/routes';
 
 
 const boardPGN = BoardFactory.newBoard()
@@ -23,7 +25,8 @@ interface Coordinates {
 
 const Chessboard = () => {
 
-  const { game, user } = useContext(AuthContext)
+  const { game, user, setLoggedUser, setCurrentGame, startLogout } = useContext(AuthContext)
+  const navigate = useNavigate()
 
   const [positions, setPositions] = useState<Tile[]>([])
   const [from, setFrom] = useState<Coordinates | null>(null)
@@ -35,6 +38,38 @@ const Chessboard = () => {
   const [colorPlayer, setColorPlayer] = useState<'white' | 'black'>('white')
 
   const { socket } = useContext(SocketContext)
+
+  useEffect(() => {
+    if (!user || !game) {
+      let loggedUser: string | User | null = localStorage.getItem('user')
+
+      if (loggedUser) {
+        loggedUser = JSON.parse(loggedUser) as User
+        setLoggedUser(loggedUser)
+      } else {
+        navigate(LOGIN)
+      }
+
+      let currentGame: string | Game | null = localStorage.getItem('game')
+
+      if (currentGame) {
+        currentGame = JSON.parse(currentGame) as Game
+
+        socket.emit('requestBoard', 'getBoard', currentGame.roomCode)
+        setCurrentGame(currentGame)
+      } else {
+        navigate(LANDING_PAGE)
+      }
+
+      let lastTurn = localStorage.getItem('turn')
+
+      if (lastTurn) {
+        setTurn(lastTurn as 'white' | 'black')
+      } else {
+        setTurn('white')
+      }
+    }
+  }, [])
 
 
   useEffect(() => {
@@ -83,6 +118,8 @@ const Chessboard = () => {
       setTo(null)
       setPossibleMoves([])
       setTurn(boardPGN.turn)
+      localStorage.setItem('turn', boardPGN.turn)
+
       socket.emit('movePiece', from.x, from.y, to.x, to.y)
       socket.emit('boardChange', boardPGN.fromObjectToJson(boardPGN.chessBoard), game!.roomCode)
 
@@ -91,13 +128,14 @@ const Chessboard = () => {
 
   useEffect(() => {
     socket.on('movePieceBack', (xFrom, yFrom, xTo, yTo) => {
-      console.log(turn)
       const tileFrom = boardPGN.chessBoard[xFrom][yFrom];
       if (tileFrom.isOccupied()) {
         const tileTo = boardPGN.chessBoard[xTo][yTo];
         boardPGN.movePiece(xFrom, yFrom, xTo, yTo, tileTo.isOccupied(), colorPlayer)
 
         setTurn(boardPGN.turn)
+        localStorage.setItem('turn', boardPGN.turn)
+
         let linealBoard: Tile[] = []
         for (let i = 7; i >= 0; i--) {
           linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
@@ -119,17 +157,38 @@ const Chessboard = () => {
 
     })
 
+    socket.on('savedBoard', (board) => {
+      boardPGN.generateBoardFromBackend(board)
+
+      let linealBoard: Tile[] = []
+      for (let i = 7; i >= 0; i--) {
+        linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
+      }
+      setPositions(linealBoard)
+    })
+
     return () => {
       socket.off('movePieceBack')
     }
   }, [socket])
 
+  const handleLogout = () => {
+    startLogout()
+    navigate(LOGIN)
+  }
+
 
   return (
     <div className='screen'>
       <div className='flex justify-between pb-10'>
-        <div className='text-4xl font-bold tracking-tight text-black'>Room ID: {game?.roomCode}</div>
-        <button type="button" className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
+        <div className='text-4xl font-bold tracking-tight text-black'>{user?.username}: {colorPlayer}
+          <br /> Room ID: {game?.roomCode}</div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+          Logout
+        </button>
       </div>
       <div className='flex flex-col-3 gap-x-20'>
         <div>

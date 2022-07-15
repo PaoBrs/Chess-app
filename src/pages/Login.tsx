@@ -1,12 +1,22 @@
-import React, { useContext, useState, } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { LANDING_PAGE } from '../routes/routes';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext/AuthCreateContext';
+import { AuthContext, User } from '../context/AuthContext/AuthCreateContext';
 
 const Login = () => {
   const navigate = useNavigate()
   const { startLogin } = useContext(AuthContext)
   const [username, setUsername] = useState('')
+
+  useEffect(() => {
+    let loggedUser: string | User | null = localStorage.getItem('user')
+
+    if (loggedUser) {
+      loggedUser = JSON.parse(loggedUser) as User
+      startLogin(loggedUser!.username).then(() => { navigate(LANDING_PAGE) })
+    }
+  }, [])
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value)
@@ -21,6 +31,7 @@ const Login = () => {
     startLogin(username).then(() => { navigate(LANDING_PAGE) })
 
   }
+
 
 
   return (
