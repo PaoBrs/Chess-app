@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { AuthContext, User, Game } from './AuthCreateContext';
+import { AuthContext, User, Game, PiecePosition } from './AuthCreateContext';
 import { authReducer } from './AuthReducer';
 import { createOrLoginUser, createGame, getCreatedGame } from '../../services/chessboardServices';
 
@@ -9,7 +9,7 @@ interface Props {
 
 export interface AuthState {
   user: User | null
-  game: Game | null
+  game: Game | any
 }
 
 export const initialState: AuthState = {
@@ -57,7 +57,11 @@ export const AuthContextProvider = ({ children }: Props) => {
     dispatch({ type: 'createGame', payload: game })
   }
 
-  //missing: enter a room by roomcode
+  const updatingBoardPositions = (positions: PiecePosition[]) => {
+    dispatch({ type: 'updateBoard', payload: positions })
+
+  }
+
   //missing: change active game in useReducer
 
   return (
@@ -70,6 +74,7 @@ export const AuthContextProvider = ({ children }: Props) => {
         setLoggedUser,
         setCurrentGame,
         startLogout,
+        updatingBoardPositions,
       }
     }>
       {children}

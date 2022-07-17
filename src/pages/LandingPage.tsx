@@ -7,9 +7,10 @@ import { calcNumberOfPlayers } from '../utils/calcNumberOfPlayers';
 
 const LandingPage = () => {
 
-  const { startCreateGame, startGettingGame, user, startLogout } = useContext(AuthContext)
+  const { startCreateGame, startGettingGame, user, startLogout, setCurrentGame } = useContext(AuthContext)
   const [activeGames, setActiveGames] = useState<Game[]>([])
   const [roomCode, setRoomCode] = useState('')
+  const [hasExitingGame, setHasExitingGame] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -19,6 +20,14 @@ const LandingPage = () => {
       getActiveGames().then((games) => { setActiveGames(games); });
     }
 
+    let game: string | Game | null = localStorage.getItem('game')
+    if (game) {
+      setHasExitingGame(true)
+    } else {
+      setHasExitingGame(false)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleClick = () => {
@@ -46,6 +55,18 @@ const LandingPage = () => {
     navigate(LOGIN)
   }
 
+  const handleResumeGame = () => {
+    let game: Game | string | null = localStorage.getItem('game')
+    game = JSON.parse(game!) as Game;
+    setCurrentGame(game);
+    navigate(CHESS_GAME);
+  }
+
+  const handleLeaveGame = () => {
+    localStorage.removeItem('game')
+    setHasExitingGame(false)
+  }
+
 
 
   return (
@@ -59,22 +80,34 @@ const LandingPage = () => {
             className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Logout</button>
         </div>
 
-        <div id="alert-2" className="flex justify-center " role="alert">
-          <div id="alert-3" className=" w-full flex p-4 mb-4 bg-yellow-100 rounded-lg" role="alert">
-            <svg className="flex-shrink-0 w-5 h-5 text-yellow-700 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-            <div className="ml-3 text-sm font-medium text-yellow-700">
-              Do you want to continue with last match?
-            </div>
-            <div className='flex gap-4 pl-2'>
-              <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8 " data-dismiss-target="#alert-3" aria-label="Close">
-                Yes
-              </button>
-              <button type="button" className="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8" data-dismiss-target="#alert-3" aria-label="Close">
-                No
-              </button>
+        {hasExitingGame &&
+          <div id="alert-2" className="flex justify-center " role="alert">
+            <div id="alert-3" className=" w-full flex p-4 mb-4 bg-yellow-100 rounded-lg" role="alert">
+              <svg className="flex-shrink-0 w-5 h-5 text-yellow-700 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+              <div className="ml-3 text-sm font-medium text-yellow-700">
+                Do you want to continue with last match?
+              </div>
+              <div className='flex gap-4 pl-2'>
+                <button
+                  type="button"
+                  onClick={handleResumeGame}
+                  className="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8 "
+                  data-dismiss-target="#alert-3"
+                  aria-label="Close">
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLeaveGame}
+                  className="ml-auto -mx-1.5 -my-1.5 bg-yellow-100 text-yellow-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-yellow-200 inline-flex h-8 w-8"
+                  data-dismiss-target="#alert-3"
+                  aria-label="Close">
+                  No
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        }
 
         <div className='flex flex-col-2 gap-10'>
           <div className=" p-4 max-w-sm bg-white rounded-lg border shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700">

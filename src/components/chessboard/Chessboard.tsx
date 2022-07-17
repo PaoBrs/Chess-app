@@ -25,7 +25,7 @@ interface Coordinates {
 
 const Chessboard = () => {
 
-  const { game, user, setLoggedUser, setCurrentGame, startLogout } = useContext(AuthContext)
+  const { game, user, setLoggedUser, setCurrentGame, startLogout, updatingBoardPositions } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const [positions, setPositions] = useState<Tile[]>([])
@@ -49,30 +49,24 @@ const Chessboard = () => {
       } else {
         navigate(LOGIN)
       }
+    }
 
-      let currentGame: string | Game | null = localStorage.getItem('game')
+    let currentGame: string | Game | null = localStorage.getItem('game')
 
-      if (currentGame) {
-        currentGame = JSON.parse(currentGame) as Game
+    if (currentGame) {
+      currentGame = JSON.parse(currentGame) as Game
 
-        socket.emit('requestBoard', 'getBoard', currentGame.roomCode)
-        setCurrentGame(currentGame)
-      } else {
-        navigate(LANDING_PAGE)
-      }
-
-      let lastTurn = localStorage.getItem('turn')
-
-      if (lastTurn) {
-        setTurn(lastTurn as 'white' | 'black')
-      } else {
-        setTurn('white')
-      }
+      setCurrentGame(currentGame)
+      socket.emit('requestBoard', 'getBoard', currentGame.roomCode)
+    } else {
+      navigate(LANDING_PAGE)
     }
   }, [])
 
 
   useEffect(() => {
+    localStorage.setItem('game', JSON.stringify(game))
+
     if (game) {
       boardPGN.generateBoardFromBackend(game.positions)
 
@@ -121,13 +115,15 @@ const Chessboard = () => {
       localStorage.setItem('turn', boardPGN.turn)
 
       socket.emit('movePiece', from.x, from.y, to.x, to.y)
-      socket.emit('boardChange', boardPGN.fromObjectToJson(boardPGN.chessBoard), game!.roomCode)
+      socket.emit('boardChange', boardPGN.fromObjectToJson(boardPGN.chessBoard), game!.roomCode, boardPGN.turn)
 
     }
   }, [to, from])
 
   useEffect(() => {
     socket.on('movePieceBack', (xFrom, yFrom, xTo, yTo) => {
+      console.log('Movimiento backend', xFrom, yFrom, xTo, yTo);
+
       const tileFrom = boardPGN.chessBoard[xFrom][yFrom];
       if (tileFrom.isOccupied()) {
         const tileTo = boardPGN.chessBoard[xTo][yTo];
@@ -145,8 +141,8 @@ const Chessboard = () => {
       }
     })
 
-    socket.on('boardChangedBack', (board) => {
-
+    socket.on('boardChangedBack', (board, turn) => {
+      updatingBoardPositions(board)
       boardPGN.generateBoardFromBackend(board)
 
       let linealBoard: Tile[] = []
@@ -154,10 +150,11 @@ const Chessboard = () => {
         linealBoard = linealBoard.concat(boardPGN.chessBoard[i])
       }
       setPositions(linealBoard)
-
     })
 
-    socket.on('savedBoard', (board) => {
+    socket.on('savedBoard', (board, turn) => {
+      boardPGN.turn = turn
+      setTurn(turn)
       boardPGN.generateBoardFromBackend(board)
 
       let linealBoard: Tile[] = []

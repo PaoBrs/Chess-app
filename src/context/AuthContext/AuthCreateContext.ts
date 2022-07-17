@@ -10,6 +10,7 @@ export interface AuthProps {
   setLoggedUser: (user: User) => void
   setCurrentGame: (game: Game) => void
   startLogout: () => void
+  updatingBoardPositions: (positions: PiecePosition[]) => void
 }
 
 export interface User {
