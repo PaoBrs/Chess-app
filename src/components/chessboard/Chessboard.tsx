@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Spot from '../tile/Spot';
 import './Chessboard.css'
 import { BoardFactory } from '../board/board';
@@ -25,7 +25,7 @@ interface Coordinates {
 
 const Chessboard = () => {
 
-  const { game, user, setLoggedUser, setCurrentGame, startLogout, updatingBoardPositions } = useContext(AuthContext)
+  const { game, user, setLoggedUser, setCurrentGame, startLogout, updatingBoardPositions, updateBoardPlayer2 } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const [positions, setPositions] = useState<Tile[]>([])
@@ -36,10 +36,12 @@ const Chessboard = () => {
   const [turn, setTurn] = useState(boardPGN.turn)
   const [isSoundErrorActive, setSoundErrorActive] = useState(false)
   const [colorPlayer, setColorPlayer] = useState<'white' | 'black'>('white')
+  const firstTime = useRef(true)
 
   const { socket } = useContext(SocketContext)
 
   useEffect(() => {
+
     if (!user || !game) {
       let loggedUser: string | User | null = localStorage.getItem('user')
 
@@ -80,6 +82,10 @@ const Chessboard = () => {
       setColorPlayer('white')
     } else if (game?.player2 === user?.username) {
       setColorPlayer('black')
+    }
+    if (game && firstTime.current === true) {
+      socket.emit('playerConnected', game.roomCode, game.player1, game.player2, user!.username)
+      firstTime.current = false
     }
 
   }, [game])
@@ -164,8 +170,18 @@ const Chessboard = () => {
       setPositions(linealBoard)
     })
 
+    socket.on('playerConnectedBack', (player1, player2, message) => {
+      console.log(message)
+      if (game?.player2 === '') {
+        console.log(game.player2)
+        updateBoardPlayer2(player2)
+      }
+    })
+
     return () => {
       socket.off('movePieceBack')
+      socket.off('boardChangedBack')
+      socket.off('savedBoard')
     }
   }, [socket])
 
@@ -199,7 +215,7 @@ const Chessboard = () => {
           <div className='flex flex-row justify-center items-center gap-2 pb-4'>
             <div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'transparent' : 'bg-green-300'}`}></div>
             <h5 className="text-2xl font-bold tracking-tight text-black text-center">
-              Player 2
+              Player 2 ({game?.player2})
             </h5></div>
           <div className='container'>
             <div className='numberAxis main-axis'>{numbers.map((number, index) => <div key={index} className='number axis-item'>{number}</div>)}</div>
@@ -225,7 +241,7 @@ const Chessboard = () => {
           <div className='letterAxis main-axis'>{letters.map((letter, index) => <div key={index} className='letter axis-item'> {letter}</div>)}</div>
           <div className='flex flex-row justify-center items-center gap-2 pt-4'><div className={`rounded-full w-6 h-6 ${turn === 'white' ? 'bg-green-300' : 'transparent'}`}></div>
             <h5 className="text-2xl font-bold tracking-tight text-black text-center">
-              Player 1
+              Player 1 ({game?.player1})
             </h5></div>
         </div>
         <div className='flex flex-col justify-between'>

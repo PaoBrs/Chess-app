@@ -4,14 +4,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext, Game } from '../context/AuthContext/AuthCreateContext';
 import { getActiveGames } from '../services/chessboardServices';
 import { calcNumberOfPlayers } from '../utils/calcNumberOfPlayers';
+import { SocketContext } from '../context/SocketCreateContext';
 
 const LandingPage = () => {
+  const { socket } = useContext(SocketContext)
 
   const { startCreateGame, startGettingGame, user, startLogout, setCurrentGame } = useContext(AuthContext)
   const [activeGames, setActiveGames] = useState<Game[]>([])
   const [roomCode, setRoomCode] = useState('')
   const [hasExitingGame, setHasExitingGame] = useState(false)
   const navigate = useNavigate()
+
 
   useEffect(() => {
     if (!user) {
@@ -26,12 +29,26 @@ const LandingPage = () => {
     } else {
       setHasExitingGame(false)
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    socket.on('refreshCreatedGames', (gamesBackend: Game[]) => {
+      setActiveGames(gamesBackend)
+    })
+
+    return () => {
+      socket.off('refreshCreatedGames')
+    }
+
+  }, [socket])
+
   const handleClick = () => {
-    startCreateGame().then(() => { navigate(CHESS_GAME) })
+    startCreateGame().then(() => {
+      socket.emit('createGame', 'newGameCreated')
+      navigate(CHESS_GAME)
+    })
+
   }
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {

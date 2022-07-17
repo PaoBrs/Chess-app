@@ -11,6 +11,7 @@ export interface AuthProps {
   setCurrentGame: (game: Game) => void
   startLogout: () => void
   updatingBoardPositions: (positions: PiecePosition[]) => void
+  updateBoardPlayer2: (player2: string) => void
 }
 
 export interface User {

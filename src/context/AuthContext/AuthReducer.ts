@@ -6,6 +6,7 @@ type AuthActionType =
   | { type: 'auth-logout' }
   | { type: 'createGame', payload: Game }
   | { type: 'updateBoard', payload: PiecePosition[] }
+  | { type: 'updatePlayer2', payload: string }
 
 export const authReducer = (state: AuthState, action: AuthActionType) => {
   switch (action.type) {
@@ -31,6 +32,16 @@ export const authReducer = (state: AuthState, action: AuthActionType) => {
         game: {
           ...state.game,
           positions: action.payload
+        }
+      }
+
+    case 'updatePlayer2':
+      return {
+        ...state,
+
+        game: {
+          ...state.game,
+          player2: action.payload
         }
       }
 

@@ -59,8 +59,12 @@ export const AuthContextProvider = ({ children }: Props) => {
 
   const updatingBoardPositions = (positions: PiecePosition[]) => {
     dispatch({ type: 'updateBoard', payload: positions })
-
   }
+
+  const updateBoardPlayer2 = (player2: string) => {
+    dispatch({ type: 'updatePlayer2', payload: player2 })
+  }
+
 
   //missing: change active game in useReducer
 
@@ -75,6 +79,7 @@ export const AuthContextProvider = ({ children }: Props) => {
         setCurrentGame,
         startLogout,
         updatingBoardPositions,
+        updateBoardPlayer2,
       }
     }>
       {children}
